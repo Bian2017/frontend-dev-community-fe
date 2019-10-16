@@ -8,7 +8,7 @@
 
 > sudo chmod +x /usr/local/bin/docker-compose
 
-### 2. 安装 MongoDB 镜像
+### 1.2 安装 MongoDB
 
 可以通过[dockerhub](https://hub.docker.com/search?q=mongo&type=image)安装 MongoDB。
 
@@ -26,11 +26,11 @@
 
 > service docker restart
 
-#### 2.1 查看本地下载哪些镜像
+1. 查看镜像是否下载成功
 
-> docker images
+> docker images # 查看本地下载哪些镜像
 
-#### 2.2 将 MongoDB 端口 27017 的服务映射到宿主机 10050 端口上
+2. 将 MongoDB 端口 27017 的服务映射到宿主机 10050 端口上
 
 > docker run -d --name my-mongo -p 10050:27017 mongo
 
@@ -41,7 +41,7 @@
 
 > docker ps
 
-#### 2.3 设置防火墙
+3. 配置防火墙
 
 开启防火墙:
 
@@ -90,7 +90,7 @@
 
 将配置文件的端口 22 修改成 10022
 
-** 修改前：**
+**修改前：**
 
 ```
 # If you want to change the port on a SELinux system, you have to tell
@@ -100,7 +100,7 @@
 #Port 22
 ```
 
-** 修改后：**
+**修改后：**
 
 ```
 # If you want to change the port on a SELinux system, you have to tell
@@ -188,7 +188,7 @@ Host tx
 
 > top
 
-5. 指定的 URL 下载文件。
+5. 从指定的 URL 链接上下载文件。
 
 > wget http://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-9/v9.0.27/bin/apache-tomcat-9.0.27.tar.gz
 
@@ -222,4 +222,4 @@ Host tx
 
 > cat /etc/hostname
 
-可以直接修改 hostname
+通过修改 hostname 可直接修改主机名。
