@@ -81,3 +81,33 @@
 4. top 命令是 Linux 下常用的性能分析工具，能够实时显示系统中各个进程的资源占用状况，类似于 Windows 的任务管理器
 
 > top
+
+5. 指定的 URL 下载文件。
+
+> wget http://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-9/v9.0.27/bin/apache-tomcat-9.0.27.tar.gz
+
+6. 解压文件
+
+> tar zxvf apache-tomcat-9.0.27.tar.gz
+
+7. 压缩文件
+
+> tar zcvf apache-tomcat.tar.gz apache-tomcat-9.0.27
+
+8. 从众多进程中查看 docker 进程相关信息
+
+> ps -ef | grep docker
+
+9. 查看系统服务状态
+
+- 查看 sshd 运行状态
+
+> service sshd status
+
+- 关闭 sshd 服务
+
+> service sshd stop
+
+- 重启 sshd 服务
+
+> service sshd restart
