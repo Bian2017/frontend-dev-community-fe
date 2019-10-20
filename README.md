@@ -1,74 +1,8 @@
-## 一、配置 Docker
-
-### 1. 安装 docker-compose:
-
-> sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-\$(uname -m)" -o /usr/local/bin/docker-compose
-
-添加执行权限:
-
-> sudo chmod +x /usr/local/bin/docker-compose
-
-### 1.2 安装 MongoDB
-
-可以通过[dockerhub](https://hub.docker.com/search?q=mongo&type=image)安装 MongoDB。
-
-> docker pull mongo # 安装 mongoDB 最新镜像
-
-若安装失败，可以添加中国加速源的地址。在/etc/docker/daemon.json 添加如下配置：
-
-```JSON
-{
-  "registry-mirrors": ["https://registry.docker-cn.com"]
-}
-```
-
-然后重启 Docker，使刚才的设置生效。
-
-> service docker restart
-
-1. 查看镜像是否下载成功
-
-> docker images # 查看本地下载哪些镜像
-
-2. 将 MongoDB 端口 27017 的服务映射到宿主机 10050 端口上
-
-> docker run -d --name my-mongo -p 10050:27017 mongo
-
-- -d: 运行在后台；
-- -p: 指定一个端口；
-
-查看当前运行的服务:
-
-> docker ps
-
-3. 配置防火墙
-
-开启防火墙:
-
-> service firewalld start
-
-将 10050 端口添加到放行的规则中：
-
-> firewall-cmd --zone=public --add-port=10050/tcp --permanent
-
-- --add-port：添加端口
-- --permanent：永久
-
-然后更新防火墙规则：
-
-> firewall-cmd --reload
-
-测试端口：
-
-> curl http://49.235.154.4:10050
-
-若无法连上该端口，则还需看下 ECS 服务器的安全组是否也设置了该端口。
-
-## 二、配置 SSH 服务
+## 一、配置 SSH 服务
 
 以下操作均在 CentOS 系统上进行。
 
-### 2.1 修改 SSH 服务的端口号
+### 1.1 修改 SSH 服务的端口号
 
 1. 先查看 sshd 服务运行状态
 
@@ -136,7 +70,7 @@ Port 10022
 
 > ssh -p 10022 root
 
-### 2.3 配置无密码登录
+### 1.2 配置无密码登录
 
 1. 在本地机器上生成公私钥
 
@@ -169,6 +103,254 @@ Host tx
 4. 连接远程服务器
 
 > ssh tx
+
+## 二、配置 Docker
+
+Docker 主要特性
+
+- 文件、资源、网络隔离；
+
+- 变更管理、日志记录；
+
+- 写时复制(采用写时复制方式创建根文件系统)；
+
+### 2.1 安装 Docker
+
+以下操作均在 CentOS 系统上进行。
+
+1. 先删除旧的版本
+
+> yum remove docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine
+
+2. 安装必须的依赖
+
+> yum install -y yum-utils device-mapper-persistent-data lvm2
+
+3. 添加 stable 的 Docker-ce 的源
+
+> yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+4. 安装 docker-ce
+
+> yum install docker-ce docker-ce-cli containerd.io
+
+安装完毕后，可以测试下 docker 是否安装成功
+
+> systemctl start docker # 开启 docker
+
+查看 docker 的运行状态
+
+> systemctl status docker
+
+运行官方提供的 docker 测试应用
+
+> docker run hello-world
+
+### 2.2 Dokcer 常用操作
+
+1. 列出容器
+
+> docker ps
+
+列出所有的容器(-a: 包括未运行的)
+
+> docker ps -a
+
+2. 镜像加速
+
+在中国区，需添加下中国官方镜像加速。
+
+在/etc/docker/daemon.json 添加如下配置：
+
+```JSON
+{
+  "registry-mirrors": ["https://registry.docker-cn.com"]
+}
+```
+
+修改保存后重启 Docker 以使配置生效。
+
+> systemctl daemon-reload
+> systemctl restart docker
+
+- daemon-reload 命令会做很多的事情，其中之一是重新生成依赖树(也就是 unit 之间的依赖关系)，所以当你修改了 unit 配置文件中的依赖关系后如果不执行 daemon-reload 命令是不会生效的。
+
+### 2.3 安装 MongoDB
+
+可以通过[dockerhub](https://hub.docker.com/search?q=mongo&type=image)安装 MongoDB。
+
+> docker pull mongo # 安装 mongoDB 最新镜像
+
+1. 查看镜像是否下载成功
+
+> docker images # 查看本地下载哪些镜像
+
+2. 将 MongoDB 端口 27017 的服务映射到宿主机 10050 端口上
+
+> docker run -d --name my-mongo -p 10050:27017 mongo
+
+- -d: 运行在后台；
+- -p: 指定一个端口；
+
+查看当前运行的服务:
+
+> docker ps
+
+3. 配置防火墙
+
+开启防火墙:
+
+> service firewalld start
+
+将 10050 端口添加到放行的规则中：
+
+> firewall-cmd --zone=public --add-port=10050/tcp --permanent
+
+- --add-port：添加端口
+- --permanent：永久
+
+然后更新防火墙规则：
+
+> firewall-cmd --reload
+
+测试端口：
+
+> curl http://49.235.154.4:10050
+
+若无法连上该端口，则还需看下 ECS 服务器的安全组是否也设置了该端口。
+
+### 2.4 删除已停止的容器
+
+> docker rm boring_wilbur # boring_wilbur 为容器的名称
+
+再使用 docker ps -a 可以发现之前的容器已经被删除。
+
+注意：
+
+如果容器正在运行中，是无法使用 docker rm 删除正在运行的容器。必须使用 docker stop 停止容器，然后使用 docker rm 删除该容器。
+
+举例：将 mysql 进行测试
+
+> docker run --name my-test-sql -e MYSQL_ROOT_PASSWORD=123456 -d mysql
+
+或
+
+> docker run --name my-test-sql -e MYSQL_ROOT_PASSWORD=123456 -p 13306:3306 -d mysql
+
+- -d: 表示后台运行
+- -p: 通过-p 可 mysql 的端口映射出来，3306 代表容器内部端口。
+
+> docker rm my-test-sql # 此时会发现无法删除该容器
+
+> docker stop my-test-sql # 停止 mysql 容器
+> docker rm my-test-sql # 容器 mysql 删除成功
+
+### 2.5 启动容器
+
+启动容器 my-test-sql。
+
+> docker start my-test-sql
+
+获取容器的日志。
+
+> docker logs -f my-test-sql
+
+- -f: 表示跟踪日志输出
+
+### 2.6 docker-compose
+
+docker-compose 是一个用户定义和运行多个容器的 Docker 应用程序。在 Compose 中你可以使用 YAML 文件来配置你的应用服务。然后，只需要一个简单的命令，就可以创建并启动你配置的所有服务。
+
+1. 安装 docker-compose
+
+> sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-\$(uname -m)" -o /usr/local/bin/docker-compose
+
+添加执行权限:
+
+> sudo chmod +x /usr/local/bin/docker-compose
+
+2. 创建 docker-compose.yml
+
+```yml
+version: '3'
+# 服务
+services:
+  # 服务mysql1
+  mysql1:
+    # 使用镜像为mysql最新镜像，故无需将:latest后缀
+    image: mysql
+
+    # 环境变量，传给容器内部，供容器内部使用
+    environment:
+      # mysql的root用户密码
+      - MYSQL_ROOT_PASSWORD=123456
+
+    ports:
+      # 将容器内部的服务端口 3306 映射到宿主机上的端口 13306上
+      - 13306:3306
+
+  # 服务mysql2
+  mysql2:
+    # 使用镜像为mysql最新镜像，故无需将:latest后缀
+    image: mysql
+
+    # 环境变量，传给容器内部，供容器内部使用
+    environment:
+      # mysql的root用户密码
+      - MYSQL_ROOT_PASSWORD=123456
+
+    ports:
+      # 将容器内部的服务端口 3306 映射到宿主机上的端口 13307上
+      - 13307:3306
+```
+
+3. 运行 docker-compose
+
+docker-compose up 命令会自动完成包括构建镜像，(重新)创建服务，启动服务，并关联服务相关容器的一系列操作。
+
+> docker-compse up -d
+
+- -d: 表示在后台运行。
+
+停止所有容器服务
+
+> docker-compose stop
+
+删除容器服务
+
+> docker-compose rm
+
+### 2.7 创建私有的 Docker 仓库(Docker hub)
+
+1. 创建账号
+
+首先在 Docker hub 上创建自己的账号，这样就可以在 Docker hub 上创建属于我们自己的镜像。
+
+2. 登录账号
+
+在 ECS 服务器上登录自己的 Docker hub 账号：
+
+> docker login
+
+3. 远程推送自己的镜像
+
+Docker 可以把我们的容器和应用打包成一个镜像，这个镜像可以在任何有 Docker 服务的地方运行起来。首先创建一个镜像
+
+> docker commit 9a15c47f4a6c 8f6650c6d6fe/mysql:1.0
+
+- 9a15c47f4a6c: 为容器 ID。此处可为容器 ID 或容器名。
+- 8f6650c6d6fe: 为自己在 Docker hub 上的账号名称。
+- "mysql:1.0" : 推送至远程仓库的镜像名称，其中 1.0 为 Tag。
+
+可以在 docker image ls 中看到这个新定制的镜像。随后使用 docker push 将本地的镜像上传到镜像仓库。
+
+> docker push 8f6650c6d6fe/mysql:1.0
+
+4. 获取镜像
+
+从 Docker hub 上获取自己创建的镜像。
+
+> docker pull 8f6650c6d6fe/mysql:1.0
 
 ## 十、常用 Linux 指令
 
