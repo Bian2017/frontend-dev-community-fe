@@ -352,6 +352,35 @@ Docker 可以把我们的容器和应用打包成一个镜像，这个镜像可�
 
 > docker pull 8f6650c6d6fe/mysql:1.0
 
+## 三、Visual Code
+
+### 3.1 常用插件
+
+#### 3.1.1 Settings Sync 插件
+
+[参考链接](https://blog.csdn.net/toopoo/article/details/85810773)
+
+在不同平台和机器之间切换 Visual Studio Code 的时候，有个需求就是同步自己的设置和插件。Visual Studio Code 的一个插件 setting sync 就提供这样一个功能，能让在任何地方都可以下载自己的配置，并且同步自己的插件。这个插件通过将设置上传到 github 的 gist 来实现。
+
+1. 上传配置
+
+shift + cmd + P 调出命令面板，输入 sync，选择上传。直接按 shift + option + U 上传，首次上传它会打开 github 页面，你需要登录，并在登陆后页面右上角按下 Generate new token，并且起一个名字，例如 setting sync。复制这个 token，因为一旦关闭这个页面你就看不到了。
+
+2. 上传配置并保存 gist id
+
+然后回到命令面板，粘贴上一步保存的 token 并回车，插件会开始上传配置(实际上是在 github 创建一个 gist 保存配置），成功后右下角会弹出一个提示，里面有配置的 gist id。也保存这个 id 到某个位置。
+
+3. 下载配置
+
+在新的机器上，也安装 setting sync 插件。在命令面板输入 sync，找到 sync 下载，首次下载同样会弹出 github 页面，这时候你不需要生成 token，你只需要把上一步保存的 token 粘贴并回车，然后命令面板要求输入 gist id，粘贴上一步保存的 gist id 并回车。新机器就可以下载 vsc 的配置并自动下载安装所有的插件。
+
+4. 忘记 access token 的办法
+
+如果没有保存 access token，可以在旧机器命令面板输入 sync 选择重置，然后重复步骤 1~3。
+
+5. 如果你只是忘记了 gist id
+
+可以到 https://gist.github.com/Bian2017 查看名称为 Visual Studio Code Settings Sync Gist 的 gist，里面就有 gist id(7bed94c5bb716984c75c8ddcef618a82)。
 ## 五、前端工程化
 
 ### 5.1 前端工程化
