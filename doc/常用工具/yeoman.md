@@ -7,11 +7,12 @@
 全局安装 yoeman、generator-generator
 
 > npm install -g yo
+
 > npm install -g generator-generator
 
 **注：**
 
-generator-generator 是用于构建脚手架的构建工具。
+generator-generator 是用于构建脚手架的脚手架构建工具。
 
 > Yeoman generator generating a Yeoman generator.
 
@@ -21,31 +22,25 @@ generator-generator 是用于构建脚手架的构建工具。
 
 运行 "yo generator"命令，完成构建脚手架项目的前置设置。
 
-1. 添加 generator 的名称，名称需以 **"generator-" 为前缀**。
+1. 设置 generator 的名称，名称需以 **"generator-" 为前缀**。
 
 > generator-smu-gulp
 
-2. 添加描述。
-
-> This is a gulp demo project
+2. 添加脚手架工具描述。
 
 3. 添加 Github 官网地址
-
-> https://github.com/Bian2017/fullstack/tree/master/examples/gulp
 
 4. 依次添加作者姓名、作者邮箱、作者首页、项目关键词
 
 5. 选择是否发送 coverage 报告
 
-6. 输入本地 node 版本号
-
-> 10.13
+6. 输入本地 node 版本号: 10.13
 
 7. 添加 Github 用户名
 
-8. 选择哪种开源协议
+8. 选择哪种开源协议: MIT
 
-> MIT
+完成以上设置后，会在本地生成一个名为 [generator-smu-gulp](https://github.com/Bian2017/fullstack/tree/master/examples/generator-smu-gulp) 的脚手架项目。
 
 ### 2.2 修改脚手架 generator-smu-gulp 配置
 
@@ -135,7 +130,7 @@ install() {
 
 ### 2.3 运行 generator
 
-当在本地目录内完成上面的创建后，generator 还不能被当做全局的 npm module，我们可以通过在 "generator-项目名" 目录下运行"npm link"来实现 generator 的全局化。
+当在本地目录内完成上面的配置后，generator 还不能被当做全局的 npm module，我们可以通过在 generator-smu-gulp 目录下运行"npm link"来实现 generator 的全局化。
 
 1. 进入 generator-smu-gulp 目录下
 
@@ -145,7 +140,7 @@ install() {
 
 > npm link
 
-**npm link 补充说明**
+**注：**
 
 > 开发 NPM 模块的时候，有时我们会希望，边开发边试用，比如本地调试的时候，require('myModule')会自动加载本地开发中的模块。Node 规定，使用一个模块时，需要将其安装到全局的或项目的 node_modules 目录之中。对于开发中的模块，解决方法就是在全局的 node_modules 目录之中，生成一个符号链接，指向模块的本地目录。npm link 就能起到这个作用，会自动建立这个符号链接。
 
@@ -153,13 +148,13 @@ install() {
 
 在本项目外创建一个 test 文件夹(名称任意)，用于进行本地测试。
 
+运行如下命令：
+
 > yo smu-gulp
 
-此时会弹出选项："Would you like to enable this option? (Y/n)"，
+会弹出选项："Would you like to enable this option? (Y/n)"，表示“是否打开 option，即是否安装我们的依赖”，选择 yes。
 
-// 是否打开 option，即是否安装我们的依赖
-
-选择 y
+此时会生成我们的项目工程，可以看到，生成的项目工程与我们的[项目模板](https://github.com/Bian2017/fullstack/tree/master/examples/gulp)完全一致。
 
 ### 2.4 发布 npm 包
 
