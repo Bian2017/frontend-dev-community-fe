@@ -4,29 +4,26 @@
 
 ## 一、快速开始
 
-全局安装 yoeman。
+全局安装 yoeman、generator-generator
 
 > npm install -g yo
-
-全局安装 generator-generator。
-
 > npm install -g generator-generator
 
 **注：**
 
-generator-generator 用于创建一个 Yeoman 构建器的构建器项目
+generator-generator 是用于构建脚手架的构建工具。
 
-> Yeoman generator generating a Yeoman generator
+> Yeoman generator generating a Yeoman generator.
 
-## 二、搭建自己的脚手架项目
+## 二、构建自己的脚手架
 
 ### 2.1 生成脚手架项目
 
-运行 "yo generator"，完成构建脚手架工具的配置。
+运行 "yo generator"命令，完成构建脚手架项目的前置设置。
 
-1. 创建 generator 的名称，名称需以 "generator-" 为前缀。
+1. 添加 generator 的名称，名称需以 **"generator-" 为前缀**。
 
-> 名称为 generator-smu-gulp
+> generator-smu-gulp
 
 2. 添加描述。
 
@@ -56,11 +53,13 @@ generator-generator 用于创建一个 Yeoman 构建器的构建器项目
 
 修改 package.json 中的 version，将 0.0.0 修改成 1.0.0。
 
-注：版本不能低于 1.0.0。
+**注：**
+
+版本不能低于 1.0.0。
 
 #### 2.2.2 复制项目工程模板代码
 
-将要拷贝项目的文件（examples/gulp 目录下的所有文件）全部拷贝到 generator-smu-gulp 目录下的 generators/app/templates
+将希望脚手架生成的[工程项目模板代码](https://github.com/Bian2017/fullstack/tree/master/examples/gulp)(即 examples/gulp 目录下的所有文件)全部拷贝到 generator-smu-gulp/generators/app/templates 目录下。
 
 #### 2.2.3 修改 index.js
 
@@ -170,7 +169,7 @@ install() {
 
 > nrm ls
 
-使用"nrm use npm"命令来进行官方镜像源的切换。
+使用 "nrm use npm" 命令来进行官方镜像源的切换。
 
 #### 2.4.2 发布 npm 包
 
