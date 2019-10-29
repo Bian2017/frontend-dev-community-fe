@@ -652,6 +652,23 @@ install() {
 - 使用 npm 进行发布
 
 link 命令本地测试，发布时设置 npm registry
+
+### 5.3 自动化测试
+
+#### 5.3.1 分类
+
+单元测试、组件测试(集成测试)、e2e 测试
+
+#### 5.3.2 framework
+
+Mocha+Chai、Jasmine、Jest、Karma
+
+#### 5.3.3 工具
+
+断言、快照测试、覆盖率、e2e
+
+## 六、Vue
+
 ## 七、Koa
 
 
