@@ -1,4 +1,4 @@
-# yeoman
+# Yeoman
 
 > Yeoman 是一种高效、开源的 Web 应用脚手架搭建系统，意在精简开发过程。Yeoman 因其专注于提供脚手架功能而声誉鹊起，它支持使用各种不同的工具和接口协同优化项目的生成。
 
@@ -8,21 +8,19 @@
 
 > npm install -g yo
 
-创建我们的脚手架工程项目
-
-> yo smu-gulp
-
-## 二、generator-generator
-
-> Yeoman generator generating a Yeoman generator
-
-generator-generator 用于创建一个 Yeoman 构建器的构建器项目
+全局安装 generator-generator。
 
 > npm install -g generator-generator
 
-快速开始
+**注：**
 
-######
+generator-generator 用于创建一个 Yeoman 构建器的构建器项目
+
+> Yeoman generator generating a Yeoman generator
+
+## 二、搭建自己的脚手架项目
+
+### 2.1 生成脚手架项目
 
 运行 "yo generator"，完成构建脚手架工具的配置。
 
@@ -194,7 +192,7 @@ install() {
 
 > yo smu-gulp
 
-## 小结
+## 三、小结
 
 1. 全局 yo 命令安装，安装命令 yo <package>
 
