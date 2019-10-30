@@ -18,31 +18,52 @@ generator-generator 是用于构建脚手架的脚手架构建工具。
 
 ## 二、构建自己的脚手架
 
-### 2.1 生成脚手架项目
+### 2.1 准备工作
 
-运行 "yo generator"命令，完成构建脚手架项目的前置设置。
+运行`yo generator`命令，完成构建脚手架项目的前置设置。
 
 1. 设置 generator 的名称，名称需以 **"generator-" 为前缀**。
 
 > generator-smu-gulp
 
+**注：**
+
+命名规则很重要，因为 yeoman 会通过文件系统来查找可以使用的 generator。当项目名称写成 'generator-xxx'的格式时，用户可以通过`yo xxx`安装你的脚手架了。
+
 2. 添加脚手架工具描述。
 
-3. 添加 Github 官网地址
+3. 添加 Github 官网地址。
 
-4. 依次添加作者姓名、作者邮箱、作者首页、项目关键词
+4. 依次添加作者姓名、作者邮箱、作者首页、项目关键词。
 
-5. 选择是否发送 coverage 报告
+5. 选择是否发送 coverage 报告。
 
-6. 输入本地 node 版本号: 10.13
+6. 输入本地 node 版本号: `10.13`。
 
-7. 添加 Github 用户名
+7. 添加 Github 用户名。
 
-8. 选择哪种开源协议: MIT
+8. 选择哪种开源协议: `MIT`。
 
-完成以上设置后，会在本地生成一个名为 [generator-smu-gulp](https://github.com/Bian2017/fullstack/tree/master/examples/generator-smu-gulp) 的脚手架项目。
+完成以上设置后，会在本地生成一个名为 [generator-smu-gulp](https://github.com/Bian2017/fullstack/tree/master/examples/generator-smu-gulp) 的脚手架项目，生成的脚手架目录结构如下：
 
-### 2.2 修改脚手架 generator-smu-gulp 配置
+```
+├── .yo-rc.json
+├── package.json
+├── generators
+│   ├── app
+│       ├── templates
+│           ├── dummyfile.txt
+│       ├── index.js
+```
+
+其中：
+
+- .yo-rc.json 用于存储项目配置，一般不会用到，无需关注；
+- generators 目录即项目模板代码
+- generators/app/templates 用于存放项目模板文件
+- generators/app/index.js 定义项目手脚架的代码
+
+### 2.2 编写自己的脚手架
 
 #### 2.2.1 修改 package.json 版本
 
@@ -53,6 +74,10 @@ generator-generator 是用于构建脚手架的脚手架构建工具。
 版本不能低于 1.0.0。
 
 #### 2.2.2 复制项目工程模板代码
+
+1. 删除 generators/app/templates 目录下默认生成的 dummyfile.txt；
+
+2. 复制模板工程代码：
 
 将希望脚手架生成的[工程项目模板代码](https://github.com/Bian2017/fullstack/tree/master/examples/gulp)(即 examples/gulp 目录下的所有文件)全部拷贝到 generator-smu-gulp/generators/app/templates 目录下。
 
@@ -101,7 +126,7 @@ install() {
 const prompts = [
   {
     type: 'confirm',
-    name: 'install',
+    name: 'install',  // 会调用原型方法install ????
     message: 'Would you like to enable this option?',
     default: true
   }
@@ -130,7 +155,7 @@ install() {
 
 ### 2.3 运行 generator
 
-当在本地目录内完成上面的配置后，generator 还不能被当做全局的 npm module，我们可以通过在 generator-smu-gulp 目录下运行"npm link"来实现 generator 的全局化。
+当在本地目录内完成上面的配置后，generator 还不能被当做全局的 npm module，我们可以通过在 generator-smu-gulp 目录下运行`npm link`来实现 generator 的全局化。
 
 1. 进入 generator-smu-gulp 目录下
 
@@ -142,7 +167,7 @@ install() {
 
 **注：**
 
-> 开发 NPM 模块的时候，有时我们会希望，边开发边试用，比如本地调试的时候，require('myModule')会自动加载本地开发中的模块。Node 规定，使用一个模块时，需要将其安装到全局的或项目的 node_modules 目录之中。对于开发中的模块，解决方法就是在全局的 node_modules 目录之中，生成一个符号链接，指向模块的本地目录。npm link 就能起到这个作用，会自动建立这个符号链接。
+> 开发 NPM 模块的时候，有时我们会希望边开发边试用，比如本地调试的时候，`require('myModule')`会自动加载本地开发中的模块。Node 规定，使用一个模块时，需要将其安装到全局的或项目的 node_modules 目录之中。对于开发中的模块，解决方法就是在全局的 node_modules 目录之中，生成一个符号链接，指向模块的本地目录。npm link 就能起到这个作用，会自动建立这个符号链接。
 
 ### 2.4 本地测试
 
@@ -164,7 +189,7 @@ install() {
 
 > nrm ls
 
-使用 "nrm use npm" 命令来进行官方镜像源的切换。
+使用`nrm use npm`命令来进行官方镜像源的切换。
 
 #### 2.4.2 发布 npm 包
 
@@ -172,7 +197,7 @@ install() {
 
 > npm login
 
-进入自己的脚手架 generator-smu-gulp 项目下，运行 npm publish。
+进入自己的脚手架 generator-smu-gulp 项目下，运行`npm publish`。
 
 #### 2.4.3 测试脚手架
 
@@ -186,16 +211,6 @@ install() {
 
 > yo smu-gulp
 
-## 三、小结
+注： 全局 yo 命令安装，安装命令 yo <package>
 
-1. 全局 yo 命令安装，安装命令 yo <package>
-
-脚手架的名称是 generator-前缀，如 yo smu-gulp
-
-2. 使用 generator-generator 快速创建脚手架生成项目
-
-> npm install -g generator-genertor
-
-3. 使用 npm 进行发布
-
-link 命令本地测试，发布时设置 npm registry
+脚手架的名称是 generator-前缀，如 yo smu-gulp。
