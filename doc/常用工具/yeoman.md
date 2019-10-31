@@ -2,6 +2,9 @@
 
 > Yeoman 是一种高效、开源的 Web 应用脚手架搭建系统，意在精简开发过程。Yeoman 因其专注于提供脚手架功能而声誉鹊起，它支持使用各种不同的工具和接口协同优化项目的生成。
 
+**参考:**
+[使用 YEOMAN 创建属于自己的前端工作流](https://segmentfault.com/a/1190000004896264)
+
 ## 一、快速开始
 
 全局安装 yoeman、generator-generator
