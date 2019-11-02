@@ -14,16 +14,20 @@ services:
     restart: always
     container_name: 'DOClever'
 
-    # 暴露端口
+    # ports:容器暴露的实际端口
     ports:
       - 10060:10000
 
-    # 挂载数据卷
+    # volumes代表着把容器中的数据挂载到你本地路径，本地路径
     volumes:
       # 进行持久化
       - /srv/doclever/file:/root/DOClever/data/file
       - /srv/doclever/img:/root/DOClever/data/img
       - /srv/doclever/tmp:/root/DOClever/data/tmp
+
+    # environment: 环境变量。
+    # DB_HOST：可以使用自定义数据库地址，或者使用容器中的mongodb
+    # PORT：中设置的端口号10000为容器中的端口（尽量不变，只修改容器暴露的端口号，即ports下面的端口），而外部的端口可以自定义。
     environment:
       - DB_HOST=mongodb://mongo:27017/DOClever
       - PORT=10000

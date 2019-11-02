@@ -9,9 +9,10 @@ import compose from 'koa-compose'
 import compress from 'koa-compress'
 import path from 'path'
 
+import abRouter from './routes/routes'
+
 const app = new koa() // 创建实例
 const router = new Router()
-const abRouter = require('./routes/routes')
 
 const isDevMode = process.env.NODE_ENV === 'production' ? false : true
 
@@ -29,8 +30,6 @@ router.get('/params', ctx => {
     a: params.a,
     b: params.b
   }
-
-  console.log('params:', params)
 })
 
 router.get('/async', async ctx => {
@@ -45,8 +44,6 @@ router.get('/async', async ctx => {
 
 router.post('/post', async ctx => {
   let { body } = ctx.request
-
-  console.log('body:', body)
 
   ctx.body = {
     ...body
@@ -63,12 +60,11 @@ const middleware = compose([
   statics(path.join(__dirname, './public')),
   // 处理跨域请求
   cors(),
-
   json({ pretty: false, param: 'pretty' }),
   helmet()
 ])
 
-// 如果是开发模式，则压缩代码
+// 如果是生产模式，则压缩代码
 if (!isDevMode) {
   app.use(compress())
 }

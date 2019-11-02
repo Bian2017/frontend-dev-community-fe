@@ -1,8 +1,8 @@
 const Router = require('koa-router')
-const a = require('../api/a')
+const aController = require('../api/aController')
 
 const router = new Router()
 
-router.get('/a', a)
+router.get('/a', aController)
 
 module.exports = router

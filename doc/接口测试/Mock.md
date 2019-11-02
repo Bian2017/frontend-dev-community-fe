@@ -1,5 +1,7 @@
 # Mock.js
 
+[参考链接](https://github.com/nuysoft/Mock/wiki/Basic)
+
 ## 一、数据占位符
 
 占位符只是在属性值字符串中占个位置，并不出现在最终的属性值中。
