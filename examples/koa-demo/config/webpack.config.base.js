@@ -39,6 +39,12 @@ const webpackconfig = {
       }
     })
   ],
+  /**
+   * 配置以下选项，可以使原本运行在node环境的代码也可以运行在其他环境。
+   * 这些选项可以配置是否 polyfill 或 mock 某些 Node.js 全局变量和模块。
+   *
+   * 值为true 表示提供提供polyfill
+   */
   node: {
     console: true,
     global: true,

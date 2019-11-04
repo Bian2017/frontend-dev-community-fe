@@ -33,6 +33,7 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
      * 分离公共代码
      */
     splitChunks: {
+      // 缓存chunk
       cacheGroups: {
         commons: {
           name: 'commons',
