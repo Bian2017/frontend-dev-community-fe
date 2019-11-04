@@ -9,7 +9,7 @@ import compose from 'koa-compose'
 import compress from 'koa-compress'
 import path from 'path'
 
-import abRouter from './routes/routes'
+import allRouter from './routes/routes'
 
 const app = new koa() // 创建实例
 const router = new Router()
@@ -18,10 +18,6 @@ const isDevMode = process.env.NODE_ENV === 'production' ? false : true
 
 // 路径前缀
 router.prefix('/api')
-
-router.get('/', ctx => {
-  ctx.body = 'hello koa'
-})
 
 router.get('/params', ctx => {
   const params = ctx.request.query
@@ -70,7 +66,7 @@ if (!isDevMode) {
 }
 
 app.use(middleware)
-app.use(abRouter())
+app.use(allRouter())
 
 app
   // 将前面定义的路由里面的方法添加到app应用上，作为中间件进行处理

@@ -6,8 +6,6 @@ class PublicController {
   async getCaptcha(ctx) {
     const newCaptcha = svgCaptcha.create({})
 
-    console.log(newCaptcha)
-
     ctx.body = {
       code: 0,
       data: newCaptcha.data

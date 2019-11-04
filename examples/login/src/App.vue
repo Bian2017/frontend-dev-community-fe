@@ -16,6 +16,7 @@
             />
           </div>
         </div>
+
         <div class="layui-form-item">
           <label class="layui-form-label">密码</label>
           <div class="layui-input-block">
@@ -30,6 +31,7 @@
             />
           </div>
         </div>
+
         <div class="layui-form-item">
           <label class="layui-form-label">验证码</label>
           <div class="layui-input-inline">
@@ -45,6 +47,7 @@
           </div>
           <div class="layui-form-mid" v-html="captcha"></div>
         </div>
+
         <button type="button" class="layui-btn">点击登录</button>
         <a class="forget-password" href="http://www.layui.com">忘记密码</a>
       </form>
@@ -59,12 +62,11 @@ export default {
   name: 'app',
   data () {
     return {
-      captcha: '',
+      captcha: ''
     }
   },
   mounted () {
-    axios.get('http://localhost:3001/getCaptcha').then(res => {
-      console.log('res:', res)
+    axios.get('http://localhost:3001/captcha').then(res => {
       if (res.status === 200) {
         const resData = res.data
         if (resData.code === 0) {
@@ -73,7 +75,7 @@ export default {
       }
     })
   }
-};
+}
 </script>
 
 <style lang="less" scoped>
