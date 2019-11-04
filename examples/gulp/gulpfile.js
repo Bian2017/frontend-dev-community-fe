@@ -17,7 +17,12 @@ const { src, dest, series, watch } = require('gulp')
 const plugins = require('gulp-load-plugins')()
 
 const del = require('del')
-// create: 创建Browsersync实例
+
+/**
+ * Browsersync能让浏览器实时、快速响应您的文件更改（html、js、css、sass、less等）并自动刷新页面。
+ *
+ * create: 创建Browsersync实例
+ */
 const browserSync = require('browser-sync').create()
 
 // reload: 会通知所有的浏览器相关文件被改动，要么导致浏览器刷新，要么注入文件，实时更新改动
