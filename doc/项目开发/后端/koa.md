@@ -50,9 +50,11 @@ koa-compose 是将 koa/koa-router 各个中间件合并执行。
 
 ## 三、webpack 配置
 
-### 3.1 指定 target
+Node 端 webpack 的环境配置如下：
 
-webpack-node-externals 对 node_modules 下的文件进行一些排除处理，这样就不会处理 node_modules 下面的一些文件
+- [公共配置]()
+- [开发环境配置]()
+- [正式环境配置]()
 
 ## 四、package.json 配置
 
@@ -81,16 +83,17 @@ npm-check-updates 可以用来更新 package.json 依赖。
 
 ### 4.3 babel-node
 
-babel-node
+babel-cli 工具自带一个 babel-node 命令，提供一个支持 ES6 的 REPL 环境。它支持 Node 的 REPL 环境的所有功能，而且可以直接运行 ES6 代码。
 
-> npx babel-node ./index.js
+> npx babel-node ./src/index.js
 
-热更新、热调试
+### 4.4 自动重启工具 nodemon
 
-nodemon
+> nodemon --exec --inspect babel-node ./index.js
 
-> nodemon --exec babel-node ./index.js
+- exec: 执行脚本
+- inspect:
 
-### 4.4 rimraf 包
+### 4.5 rimraf 包
 
 以包的形式包装`rm -rf`命令，用来删除文件和文件夹。
