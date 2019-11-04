@@ -2,19 +2,21 @@
   <div id="app">
     <div class="layui-container">
       <form class="layui-form layui-form-pane" action>
-        <div class="layui-form-item">
+        <div class="layui-form-item" :class="{'form-group--error': $v.username.$error}">
           <label class="layui-form-label">用户名</label>
-          <div class="layui-input-block">
+          <div class="layui-input-inline">
             <input
               type="text"
               name="title"
-              required
-              lay-verify="required"
-              placeholder="请输入标题"
+              placeholder="请输入用户名"
               autocomplete="off"
               class="layui-input"
+              v-model.trim="username"
+              @input="setUsername($event.target.value)"
             />
           </div>
+          <div class="error layui-form-mid" v-if="!$v.username.required">用户名不能为空</div>
+          <div class="error layui-form-mid" v-if="!$v.username.email">用户名输入格式错误</div>
         </div>
 
         <div class="layui-form-item">
@@ -23,11 +25,10 @@
             <input
               type="password"
               name="title"
-              required
-              lay-verify="required"
-              placeholder="请输入标题"
+              placeholder="请输入密码"
               autocomplete="off"
               class="layui-input"
+              v-model="password"
             />
           </div>
         </div>
@@ -38,14 +39,13 @@
             <input
               type="text"
               name="title"
-              required
-              lay-verify="required"
-              placeholder="请输入标题"
+              placeholder="请输入验证码"
               autocomplete="off"
               class="layui-input"
+              v-model="userCaptcha"
             />
           </div>
-          <div class="layui-form-mid" v-html="captcha"></div>
+          <div class="layui-form-mid svg" v-html="captcha" @click="getCaptcha"></div>
         </div>
 
         <button type="button" class="layui-btn">点击登录</button>
@@ -56,25 +56,52 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
+import { required, email } from 'vuelidate/lib/validators'
 
 export default {
   name: 'app',
   data () {
     return {
-      captcha: ''
+      captcha: '',
+      username: '', // 用户名
+      password: '',
+      userCaptcha: '', // 用户输入的验证码
     }
   },
   mounted () {
-    axios.get('http://localhost:3001/captcha').then(res => {
-      if (res.status === 200) {
-        const resData = res.data
-        if (resData.code === 0) {
-          this.captcha = resData.data
+    this.getCaptcha()
+  },
+  validations: {
+    username: {
+      required,
+      email
+    },
+    password: {
+      required
+    },
+    userCaptcha: {
+      required
+    }
+  },
+  methods: {
+    getCaptcha () {
+      axios.get('http://localhost:3001/captcha').then(res => {
+        if (res.status === 200) {
+          const resData = res.data
+          if (resData.code === 0) {
+            this.captcha = resData.data
+          }
         }
-      }
-    })
-  }
+      })
+    },
+    setUsername (value) {
+      this.username = value
+      // 通过调用$touch，主动进行校验
+      this.$v.username.$touch()
+    },
+  },
+
 }
 </script>
 
@@ -96,6 +123,21 @@ input {
 
   &:hover {
     color: #009688;
+  }
+}
+
+.svg {
+  position: relative;
+  top: -20px;
+}
+
+.error {
+  display: none;
+}
+
+.form-group--error {
+  .error {
+    display: block;
   }
 }
 </style>
