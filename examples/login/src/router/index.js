@@ -1,29 +1,39 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
+import Vue from 'vue'
+import VueRouter from 'vue-router'
 
-Vue.use(VueRouter);
+/**
+ * 懒加载
+ *
+ * 在注释中提供 webpackChunkName，这样将拆分出来的 bundle 命名为 [name].bundle.js，而不是 [id].bundle.js
+ */
+const Login = () => import(/* webpackChunkName: 'login' */ '../views/Login.vue')
+const Reg = () => import(/* webpackChunkName: 'reg' */ '../views/Reg.vue')
+const Forget = () => import(/* webpackChunkName: 'forget' */ '../views/Forget.vue')
+
+Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '/login',
     name: 'home',
-    component: Home,
+    component: Login
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    path: '/reg',
+    name: 'reg',
+    component: Reg
   },
-];
+  {
+    path: '/forget',
+    name: 'home',
+    component: Forget
+  }
+]
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes,
-});
+  routes
+})
 
-export default router;
+export default router
