@@ -4,8 +4,8 @@
       <form class="layui-form layui-form-pane" action>
         <div class="layui-form-item">
           <label class="layui-form-label">用户名</label>
-          <ValidationProvider name="用户名" rules="required|email">
-            <div class="layui-input-inline" slot-scope="{ errors }">
+          <ValidationProvider name="用户名" rules="required|email" v-slot="{ errors }">
+            <div class="layui-input-inline">
               <input
                 type="text"
                 name="title"
@@ -14,15 +14,15 @@
                 class="layui-input"
                 v-model="username"
               />
-              <span class="error layui-form-mid">{{errors[0]}}</span>
             </div>
+            <span class="error layui-form-mid">{{errors[0]}}</span>
           </ValidationProvider>
         </div>
 
         <div class="layui-form-item">
           <label class="layui-form-label">密码</label>
-          <ValidationProvider name="密码" rules="required">
-            <div class="layui-input-block" slot-scope="{ errors }">
+          <ValidationProvider name="密码" rules="required" v-slot="{errors}">
+            <div class="layui-input-inline">
               <input
                 type="password"
                 name="title"
@@ -31,15 +31,15 @@
                 class="layui-input"
                 v-model="password"
               />
-              <span>{{errors[0]}}</span>
             </div>
+            <span class="error layui-form-mid">{{errors[0]}}</span>
           </ValidationProvider>
         </div>
 
         <div class="layui-form-item">
           <label class="layui-form-label">验证码</label>
-          <ValidationProvider name="验证码" rules="required">
-            <div class="layui-input-inline" slot-scope="{ errors }">
+          <ValidationProvider name="验证码" rules="required" v-slot="{errors}">
+            <div class="layui-input-inline">
               <input
                 type="text"
                 name="title"
@@ -48,7 +48,7 @@
                 class="layui-input"
                 v-model="userCaptcha"
               />
-              <span>{{errors[0]}}</span>
+              <span class="error">{{errors[0]}}</span>
             </div>
             <div class="layui-form-mid svg" v-html="captcha" @click="getCaptcha"></div>
           </ValidationProvider>
@@ -119,6 +119,7 @@ input {
 }
 
 .error {
+  margin-left: 20px;
   color: red;
 }
 </style>
