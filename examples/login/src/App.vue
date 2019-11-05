@@ -2,50 +2,56 @@
   <div id="app">
     <div class="layui-container">
       <form class="layui-form layui-form-pane" action>
-        <div class="layui-form-item" :class="{'form-group--error': $v.username.$error}">
+        <div class="layui-form-item">
           <label class="layui-form-label">用户名</label>
-          <div class="layui-input-inline">
-            <input
-              type="text"
-              name="title"
-              placeholder="请输入用户名"
-              autocomplete="off"
-              class="layui-input"
-              v-model.trim="username"
-              @input="setUsername($event.target.value)"
-            />
-          </div>
-          <div class="error layui-form-mid" v-if="!$v.username.required">用户名不能为空</div>
-          <div class="error layui-form-mid" v-if="!$v.username.email">用户名输入格式错误</div>
+          <ValidationProvider name="用户名" rules="required|email">
+            <div class="layui-input-inline" slot-scope="{ errors }">
+              <input
+                type="text"
+                name="title"
+                placeholder="请输入用户名"
+                autocomplete="off"
+                class="layui-input"
+                v-model="username"
+              />
+              <span class="error layui-form-mid">{{errors[0]}}</span>
+            </div>
+          </ValidationProvider>
         </div>
 
         <div class="layui-form-item">
           <label class="layui-form-label">密码</label>
-          <div class="layui-input-block">
-            <input
-              type="password"
-              name="title"
-              placeholder="请输入密码"
-              autocomplete="off"
-              class="layui-input"
-              v-model="password"
-            />
-          </div>
+          <ValidationProvider name="密码" rules="required">
+            <div class="layui-input-block" slot-scope="{ errors }">
+              <input
+                type="password"
+                name="title"
+                placeholder="请输入密码"
+                autocomplete="off"
+                class="layui-input"
+                v-model="password"
+              />
+              <span>{{errors[0]}}</span>
+            </div>
+          </ValidationProvider>
         </div>
 
         <div class="layui-form-item">
           <label class="layui-form-label">验证码</label>
-          <div class="layui-input-inline">
-            <input
-              type="text"
-              name="title"
-              placeholder="请输入验证码"
-              autocomplete="off"
-              class="layui-input"
-              v-model="userCaptcha"
-            />
-          </div>
-          <div class="layui-form-mid svg" v-html="captcha" @click="getCaptcha"></div>
+          <ValidationProvider name="验证码" rules="required">
+            <div class="layui-input-inline" slot-scope="{ errors }">
+              <input
+                type="text"
+                name="title"
+                placeholder="请输入验证码"
+                autocomplete="off"
+                class="layui-input"
+                v-model="userCaptcha"
+              />
+              <span>{{errors[0]}}</span>
+            </div>
+            <div class="layui-form-mid svg" v-html="captcha" @click="getCaptcha"></div>
+          </ValidationProvider>
         </div>
 
         <button type="button" class="layui-btn">点击登录</button>
@@ -57,7 +63,6 @@
 
 <script>
 import axios from 'axios'
-import { required, email } from 'vuelidate/lib/validators'
 
 export default {
   name: 'app',
@@ -72,18 +77,6 @@ export default {
   mounted () {
     this.getCaptcha()
   },
-  validations: {
-    username: {
-      required,
-      email
-    },
-    password: {
-      required
-    },
-    userCaptcha: {
-      required
-    }
-  },
   methods: {
     getCaptcha () {
       axios.get('http://localhost:3001/captcha').then(res => {
@@ -95,13 +88,7 @@ export default {
         }
       })
     },
-    setUsername (value) {
-      this.username = value
-      // 通过调用$touch，主动进行校验
-      this.$v.username.$touch()
-    },
   },
-
 }
 </script>
 
@@ -132,12 +119,6 @@ input {
 }
 
 .error {
-  display: none;
-}
-
-.form-group--error {
-  .error {
-    display: block;
-  }
+  color: red;
 }
 </style>

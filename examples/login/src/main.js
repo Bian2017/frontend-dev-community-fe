@@ -1,10 +1,21 @@
 import Vue from 'vue'
-import Vuelidate from 'vuelidate'
+import { ValidationProvider, localize, extend } from 'vee-validate'
+import * as rules from 'vee-validate/dist/rules'
+import zhCN from 'vee-validate/dist/locale/zh_CN.json'
 import App from './App.vue'
 import router from './router'
 import store from './store'
 
-Vue.use(Vuelidate)
+localize('zh', zhCN)
+
+for (let i = 0; i < Object.keys(rules).length; i += 1) {
+  const key = Object.keys(rules)[i]
+
+  extend(key, { ...rules[key] })
+}
+
+// 全局注册
+Vue.component('ValidationProvider', ValidationProvider)
 
 Vue.config.productionTip = false
 
