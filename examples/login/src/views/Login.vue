@@ -14,7 +14,6 @@
               <form method="post">
                 <div class="layui-form-item">
                   <label for="username" class="layui-form-label">用户名</label>
-
                   <ValidationProvider name="用户名" rules="required|email" v-slot="{ errors }">
                     <div class="layui-input-inline">
                       <input
@@ -29,6 +28,7 @@
                     <span class="error layui-form-mid">{{errors[0]}}</span>
                   </ValidationProvider>
                 </div>
+
                 <div class="layui-form-item">
                   <label for="L_pass" class="layui-form-label">密码</label>
 
