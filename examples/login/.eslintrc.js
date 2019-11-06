@@ -12,7 +12,13 @@ module.exports = {
   extends: ['plugin:vue/essential', '@vue/airbnb', 'prettier'],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'import/no-unresolved': [
+      2,
+      {
+        ignore: ['^@/'] // 解决eslint不能识别webpack的路径别名
+      }
+    ]
   },
   parserOptions: {
     parser: 'babel-eslint'
