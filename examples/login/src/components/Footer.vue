@@ -1,8 +1,8 @@
 <template>
   <div class="fly-footer">
     <p>
-      <a href="/" target="_blank">Node社区</a> 2017 &copy;
-      <a href="/" target="_blank">layui.com 出品</a>
+      <a href="/" target="_blank">Node社区</a> 2019 &copy;
+      <a href="/" target="_blank">辻目 出品</a>
     </p>
     <p>
       <a href="/jie/3147/" target="_blank">付费计划</a>

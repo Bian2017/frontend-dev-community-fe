@@ -91,7 +91,7 @@
                 </div>
 
                 <div class="layui-form-item">
-                  <button class="layui-btn" alert="1" lay-filter="*" lay-submit>提交</button>
+                  <button type="button" class="layui-btn" @click="submit">提交</button>
                 </div>
               </form>
             </div>
@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import { getCaptchaAsync } from '@/services/login'
+import { getCaptchaAsync, forgetPasswordAsync } from '@/services/login'
 
 export default {
   name: 'forget',
@@ -121,6 +121,11 @@ export default {
     getCaptcha () {
       getCaptchaAsync().then(res => {
         this.svgCaptcha = res
+      })
+    },
+    submit () {
+      forgetPasswordAsync({ username: this.email, code: this.code }).then(res => {
+        console.log('res:', res)
       })
     }
   }
