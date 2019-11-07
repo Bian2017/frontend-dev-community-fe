@@ -8,7 +8,6 @@ import helmet from 'koa-helmet'
 import compose from 'koa-compose'
 import compress from 'koa-compress'
 import path from 'path'
-
 import allRouter from './routes/routes'
 
 const app = new koa() // 创建实例
@@ -18,33 +17,6 @@ const isDevMode = process.env.NODE_ENV === 'production' ? false : true
 
 // 路径前缀
 router.prefix('/api')
-
-router.get('/params', ctx => {
-  const params = ctx.request.query
-
-  ctx.body = {
-    a: params.a,
-    b: params.b
-  }
-})
-
-router.get('/async', async ctx => {
-  const result = await new Promise(resolve => {
-    setTimeout(function() {
-      resolve('Hello aysnc 2s later')
-    }, 2000)
-  })
-
-  ctx.body = result
-})
-
-router.post('/post', async ctx => {
-  let { body } = ctx.request
-
-  ctx.body = {
-    ...body
-  }
-})
 
 /**
  * 使用koa-compose集成中间件
