@@ -4,7 +4,7 @@
       <div class="layui-tab layui-tab-brief" lay-filter="user">
         <ul class="layui-tab-title">
           <li>
-            <router-link :to="{name: 'login'}">登录</router-link>
+            <router-link :to="{ name: 'login' }">登录</router-link>
           </li>
           <li class="layui-this">注册</li>
         </ul>
@@ -13,33 +13,51 @@
             <div class="layui-form layui-form-pane">
               <form method="post">
                 <div class="layui-form-item">
-                  <label for="username" class="layui-form-label">用户名</label>
-                  <ValidationProvider name="用户名" rules="required|email" v-slot="{ errors }">
+                  <label for="username" class="layui-form-label">邮箱</label>
+                  <ValidationProvider name="email" rules="required|email" v-slot="{ errors }">
                     <div class="layui-input-inline">
                       <input
                         type="text"
-                        name="username"
-                        v-model="username"
-                        placeholder="请输入用户名"
+                        name="email"
+                        v-model="email"
+                        placeholder="请输入邮箱"
                         autocomplete="off"
                         class="layui-input"
                       />
                     </div>
                     <div class="layui-form-mid layui-word-aux">将会成为您唯一的登入名</div>
-                    <div class="layui-form-mid error">{{errors[0]}}</div>
+                    <div class="layui-form-mid error">{{ errors[0] }}</div>
                   </ValidationProvider>
                 </div>
 
                 <div class="layui-form-item">
                   <label class="layui-form-label">昵称</label>
-                  <div class="layui-input-inline">
-                    <input type="text" name="nickname" autocomplete="off" class="layui-input" />
-                  </div>
+                  <ValidationProvider
+                    name="nickname"
+                    rules="required|min:6|max:16"
+                    v-slot="{ errors }"
+                  >
+                    <div class="layui-input-inline">
+                      <input
+                        type="nickname"
+                        name="nickname"
+                        v-model="nickname"
+                        placeholder="请输入昵称"
+                        class="layui-input"
+                      />
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">6到16个字符</div>
+                    <span class="error layui-form-mid">{{ errors[0] }}</span>
+                  </ValidationProvider>
                 </div>
 
                 <div class="layui-form-item">
                   <label class="layui-form-label">密码</label>
-                  <ValidationProvider name="密码" rules="required|min:6|max:16" v-slot="{errors}">
+                  <ValidationProvider
+                    name="password"
+                    rules="required|min:6|max:16"
+                    v-slot="{ errors }"
+                  >
                     <div class="layui-input-inline">
                       <input
                         type="password"
@@ -50,13 +68,17 @@
                       />
                     </div>
                     <div class="layui-form-mid layui-word-aux">6到16个字符</div>
-                    <span class="error layui-form-mid">{{errors[0]}}</span>
+                    <span class="error layui-form-mid">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
 
                 <div class="layui-form-item">
                   <label class="layui-form-label">确认密码</label>
-                  <ValidationProvider name="密码" rules="required|min:6|max:16" v-slot="{errors}">
+                  <ValidationProvider
+                    name="password"
+                    rules="required|min:6|max:16"
+                    v-slot="{ errors }"
+                  >
                     <div class="layui-input-inline">
                       <input
                         type="password"
@@ -66,23 +88,27 @@
                         class="layui-input"
                       />
                     </div>
-                    <span class="error layui-form-mid">{{errors[0]}}</span>
+                    <span class="error layui-form-mid">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
 
                 <div class="layui-form-item">
-                  <label for="L_vercode" class="layui-form-label">验证码</label>
-                  <ValidationProvider name="验证码" rules="required|length:4" v-slot="{errors}">
+                  <label for="verificationCode" class="layui-form-label">验证码</label>
+                  <ValidationProvider
+                    name="verificationCode"
+                    rules="required|length:4"
+                    v-slot="{ errors }"
+                  >
                     <div class="layui-input-inline">
                       <input
                         type="text"
-                        name="vercode"
-                        v-model="vercode"
+                        name="verificationCode"
+                        v-model="verificationCode"
                         placeholder="请输入验证码"
                         autocomplete="off"
                         class="layui-input"
                       />
-                      <span class="error">{{errors[0]}}</span>
+                      <span class="error">{{ errors[0] }}</span>
                     </div>
                     <div class="layui-form-mid svg" v-html="svgCaptcha" @click="getCaptcha"></div>
                   </ValidationProvider>
@@ -116,32 +142,35 @@
 </template>
 
 <script>
-import { getCaptchaAsync } from '@/services/login'
+import { ValidationProvider } from "vee-validate";
+import { getCaptchaAsync } from "@/services/login";
 
 export default {
-  name: 'register',
-  data () {
-    return {
-      username: '',
-      nickname: '', // 昵称
-      password: '',
-      confirmPassword: '', // 确认密码
-      vercode: '', // 验证码
-      svgCaptcha: ''
-    }
+  name: "register",
+  components: {
+    ValidationProvider
   },
-  mounted () {
-    this.getCaptcha()
+  data() {
+    return {
+      email: "", // 邮箱
+      nickname: "", // 昵称
+      password: "",
+      confirmPassword: "", // 确认密码
+      verificationCode: "", // 验证码
+      svgCaptcha: ""
+    };
+  },
+  mounted() {
+    this.getCaptcha();
   },
   methods: {
-    getCaptcha () {
+    getCaptcha() {
       getCaptchaAsync().then(res => {
-        this.svgCaptcha = res
-      })
+        this.svgCaptcha = res;
+      });
     }
   }
-
-}
+};
 </script>
 
 <style>

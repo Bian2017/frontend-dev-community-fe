@@ -4,7 +4,7 @@
       <div class="layui-tab layui-tab-brief" lay-filter="user">
         <ul class="layui-tab-title">
           <li>
-            <router-link :to="{name: 'login'}">登录</router-link>
+            <router-link :to="{ name: 'login' }">登录</router-link>
           </li>
           <li class="layui-this">
             找回密码
@@ -57,7 +57,7 @@
               <form method="post">
                 <div class="layui-form-item">
                   <label for="email" class="layui-form-label">邮箱</label>
-                  <ValidationProvider name="邮箱" rules="required|email" v-slot="{ errors }">
+                  <ValidationProvider name="email" rules="required|email" v-slot="{ errors }">
                     <div class="layui-input-inline">
                       <input
                         type="text"
@@ -68,23 +68,27 @@
                         class="layui-input"
                       />
                     </div>
-                    <span class="error layui-form-mid">{{errors[0]}}</span>
+                    <span class="error layui-form-mid">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
 
                 <div class="layui-form-item">
-                  <label for="L_vercode" class="layui-form-label">验证码</label>
-                  <ValidationProvider name="验证码" rules="required|length:4" v-slot="{errors}">
+                  <label for="verificationCode" class="layui-form-label">验证码</label>
+                  <ValidationProvider
+                    name="verificationCode"
+                    rules="required|length:4"
+                    v-slot="{ errors }"
+                  >
                     <div class="layui-input-inline">
                       <input
                         type="text"
-                        name="vercode"
-                        v-model="vercode"
+                        name="verificationCode"
+                        v-model="verificationCode"
                         placeholder="请输入验证码"
                         autocomplete="off"
                         class="layui-input"
                       />
-                      <span class="error">{{errors[0]}}</span>
+                      <span class="error">{{ errors[0] }}</span>
                     </div>
                     <div class="layui-form-mid svg" v-html="svgCaptcha" @click="getCaptcha"></div>
                   </ValidationProvider>
@@ -103,35 +107,39 @@
 </template>
 
 <script>
-import { getCaptchaAsync, forgetPasswordAsync } from '@/services/login'
+import { ValidationProvider } from "vee-validate";
+import { getCaptchaAsync, forgetPasswordAsync } from "@/services/login";
 
 export default {
-  name: 'forget',
-  data () {
-    return {
-      email: '',
-      vercode: '', // 验证码
-      svgCaptcha: ''
-    }
+  name: "forget",
+  components: {
+    ValidationProvider
   },
-  mounted () {
-    this.getCaptcha()
+  data() {
+    return {
+      email: "",
+      verificationCode: "", // 验证码
+      svgCaptcha: ""
+    };
+  },
+  mounted() {
+    this.getCaptcha();
   },
   methods: {
-    getCaptcha () {
+    getCaptcha() {
       getCaptchaAsync().then(res => {
-        this.svgCaptcha = res
-      })
+        this.svgCaptcha = res;
+      });
     },
-    submit () {
-      forgetPasswordAsync({ username: this.email, code: this.code }).then(res => {
-        console.log('res:', res)
-      })
+    submit() {
+      forgetPasswordAsync({ username: this.email, code: this.code }).then(
+        res => {
+          console.log("res:", res);
+        }
+      );
     }
   }
-
-}
+};
 </script>
 
-<style>
-</style>
+<style></style>

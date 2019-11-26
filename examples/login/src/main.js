@@ -1,27 +1,13 @@
-import Vue from 'vue'
-import { ValidationProvider, extend } from 'vee-validate'
-import * as rules from 'vee-validate/dist/rules'
-import zhCN from 'vee-validate/dist/locale/zh_CN.json'
-import App from './App.vue'
-import router from './router'
-import store from './store'
+import Vue from "vue";
+import App from "./App.vue";
+import router from "./router";
+import store from "./store";
+import "@/utils/veevalidate";
 
-for (let i = 0; i < Object.keys(rules).length; i += 1) {
-  const key = Object.keys(rules)[i]
-
-  extend(key, {
-    ...rules[key],
-    message: zhCN.messages[key]
-  })
-}
-
-// 全局注册
-Vue.component('ValidationProvider', ValidationProvider)
-
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 new Vue({
   router,
   store,
   render: h => h(App)
-}).$mount('#app')
+}).$mount("#app");

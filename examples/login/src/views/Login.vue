@@ -5,7 +5,7 @@
         <ul class="layui-tab-title">
           <li class="layui-this">登入</li>
           <li>
-            <router-link :to="{name: 'reg'}">注册</router-link>
+            <router-link :to="{ name: 'reg' }">注册</router-link>
           </li>
         </ul>
         <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
@@ -13,26 +13,25 @@
             <div class="layui-form layui-form-pane">
               <form method="post">
                 <div class="layui-form-item">
-                  <label for="username" class="layui-form-label">用户名</label>
-                  <ValidationProvider name="用户名" rules="required|email" v-slot="{ errors }">
+                  <label for="email" class="layui-form-label">邮箱</label>
+                  <ValidationProvider name="email" rules="required|email" v-slot="{ errors }">
                     <div class="layui-input-inline">
                       <input
                         type="text"
-                        name="username"
-                        v-model="username"
-                        placeholder="请输入用户名"
+                        name="email"
+                        v-model="email"
+                        placeholder="请输入邮箱"
                         autocomplete="off"
                         class="layui-input"
                       />
                     </div>
-                    <span class="error layui-form-mid">{{errors[0]}}</span>
+                    <span class="error layui-form-mid">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
 
                 <div class="layui-form-item">
-                  <label for="L_pass" class="layui-form-label">密码</label>
-
-                  <ValidationProvider name="密码" rules="required|min:6" v-slot="{errors}">
+                  <label for="password" class="layui-form-label">密码</label>
+                  <ValidationProvider name="password" rules="required|min:6" v-slot="{ errors }">
                     <div class="layui-input-inline">
                       <input
                         type="password"
@@ -42,23 +41,27 @@
                         class="layui-input"
                       />
                     </div>
-                    <span class="error layui-form-mid">{{errors[0]}}</span>
+                    <span class="error layui-form-mid">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
 
                 <div class="layui-form-item">
-                  <label for="L_vercode" class="layui-form-label">验证码</label>
-                  <ValidationProvider name="验证码" rules="required|length:4" v-slot="{errors}">
+                  <label for="verificationCode" class="layui-form-label">验证码</label>
+                  <ValidationProvider
+                    name="verificationCode"
+                    rules="required|length:4"
+                    v-slot="{ errors }"
+                  >
                     <div class="layui-input-inline">
                       <input
                         type="text"
-                        name="vercode"
-                        v-model="vercode"
+                        name="verificationCode"
+                        v-model="verificationCode"
                         placeholder="请输入验证码"
                         autocomplete="off"
                         class="layui-input"
                       />
-                      <span class="error">{{errors[0]}}</span>
+                      <span class="error">{{ errors[0] }}</span>
                     </div>
                     <div class="layui-form-mid svg" v-html="svgCaptcha" @click="getCaptcha"></div>
                   </ValidationProvider>
@@ -67,7 +70,7 @@
                 <div class="layui-form-item">
                   <button class="layui-btn">立即登录</button>
                   <span style="padding-left:20px;">
-                    <router-link :to="{name: 'forget'}">忘记密码?</router-link>
+                    <router-link :to="{ name: 'forget' }">忘记密码?</router-link>
                   </span>
                 </div>
                 <div class="layui-form-item fly-form-app">
@@ -95,29 +98,33 @@
 </template>
 
 <script>
-import { getCaptchaAsync } from '@/services/login'
+import { ValidationProvider } from "vee-validate";
+import { getCaptchaAsync } from "@/services/login";
 
 export default {
-  name: 'login',
-  data () {
+  name: "login",
+  data() {
     return {
-      username: '',
-      password: '',
-      vercode: '', // 验证码
-      svgCaptcha: ''
-    }
+      email: "",
+      password: "",
+      verificationCode: "", // 验证码
+      svgCaptcha: ""
+    };
   },
-  mounted () {
-    this.getCaptcha()
+  components: {
+    ValidationProvider
+  },
+  mounted() {
+    this.getCaptcha();
   },
   methods: {
-    getCaptcha () {
+    getCaptcha() {
       getCaptchaAsync().then(res => {
-        this.svgCaptcha = res
-      })
+        this.svgCaptcha = res;
+      });
     }
   }
-}
+};
 </script>
 
 <style>

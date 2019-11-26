@@ -1,28 +1,35 @@
-import axios from 'axios'
+/**
+ * 封装axios请求，并对错误进行统一处理
+ */
+import axios from "axios";
+import errorHandle from "./errorHandle";
 
 const defaultConfig = {
-  baseURL: process.env.NODE_ENV !== 'production' ? 'http://localhost:3001' : 'http://domain.com'
-}
+  baseURL: process.env.NODE_ENV !== "production" ? "http://localhost:3001" : "http://domain.com"
+};
 
 // 创建一个axios实例
-const request = axios.create(defaultConfig)
+const request = axios.create(defaultConfig);
 
 // 响应拦截
 request.interceptors.response.use(
   response => {
-    if (response.status !== 200) throw new Error(`请求状态码出错:${response.status}`)
+    if (response.status === 200) {
+      const { data } = response;
 
-    const { data } = response
-
-    if (data.code === 0) {
-      return data.data
+      if (data.code === 0) {
+        return Promise.resolve(response.data.data);
+      }
     }
 
-    return Promise.reject(data)
+    return Promise.reject(response);
   },
   error => {
-    return Promise.reject(error)
-  }
-)
+    debugger;
+    errorHandle(error);
 
-export default request
+    return Promise.reject(error);
+  }
+);
+
+export default request;
