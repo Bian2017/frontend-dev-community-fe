@@ -4,10 +4,10 @@
 import axios from "axios";
 import errorHandle from "./errorHandle";
 
-/* eslint class-methods-use-this: ["error", { "exceptMethods": ["interceptors"] }] */
 class HttpRequest {
   constructor(baseUrl) {
     this.baseUrl = baseUrl;
+    this.instance = null;
   }
 
   // 获取内部配置
@@ -24,9 +24,9 @@ class HttpRequest {
   }
 
   // 设定拦截器
-  interceptors(instance) {
+  interceptors() {
     // 响应拦截
-    instance.interceptors.response.use(
+    this.instance.interceptors.response.use(
       response => {
         if (response.status === 200) {
           const { data } = response;
@@ -47,21 +47,21 @@ class HttpRequest {
 
   // 创建实例
   request(options) {
-    const instance = axios.create();
+    if (!this.instance) {
+      this.instance = axios.create();
+      this.interceptors();
+    }
     const newOpts = Object.assign(this.getInsideConfig(), options);
 
-    this.interceptors(instance);
-    return instance(newOpts);
+    return this.instance(newOpts);
   }
 
   get(url, config) {
-    const options = {
+    return this.request({
       method: "get",
       url,
       ...config
-    };
-
-    return this.request(options);
+    });
   }
 
   post(url, data) {
