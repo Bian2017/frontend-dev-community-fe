@@ -1,22 +1,22 @@
-import koa from 'koa'
-import Router from 'koa-router'
-import cors from '@koa/cors'
-import koaBody from 'koa-body'
-import json from 'koa-json' // 处理json格式
-import statics from 'koa-static'
-import helmet from 'koa-helmet'
-import compose from 'koa-compose'
-import compress from 'koa-compress'
-import path from 'path'
-import allRouter from './routes/routes'
+import koa from 'koa';
+import Router from 'koa-router';
+import cors from '@koa/cors';
+import koaBody from 'koa-body';
+import json from 'koa-json'; // 处理json格式
+import statics from 'koa-static';
+import helmet from 'koa-helmet';
+import compose from 'koa-compose';
+import compress from 'koa-compress';
+import path from 'path';
+import allRouter from './routes/routes.js';
 
-const app = new koa() // 创建实例
-const router = new Router()
+const app = new koa(); // 创建实例
+const router = new Router();
 
-const isDevMode = process.env.NODE_ENV === 'production' ? false : true
+const isDevMode = process.env.NODE_ENV === 'production' ? false : true;
 
 // 路径前缀
-router.prefix('/api')
+router.prefix('/api');
 
 /**
  * 使用koa-compose集成中间件
@@ -30,20 +30,20 @@ const middleware = compose([
   cors(),
   json({ pretty: false, param: 'pretty' }),
   helmet()
-])
+]);
 
 // 如果是生产模式，则压缩代码
 if (!isDevMode) {
-  app.use(compress())
+  app.use(compress());
 }
 
-app.use(middleware)
-app.use(allRouter())
+app.use(middleware);
+app.use(allRouter());
 
 app
   // 将前面定义的路由里面的方法添加到app应用上，作为中间件进行处理
   .use(router.routes())
   // 拦截器，拦截应用中没有的请求，返回4xx错误或者5xx错误
-  .use(router.allowedMethods())
+  .use(router.allowedMethods());
 
-app.listen(3001)
+app.listen(3001);

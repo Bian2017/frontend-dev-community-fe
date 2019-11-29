@@ -1,8 +1,8 @@
-const path = require('path')
-const webpack = require('webpack')
-const nodeExternals = require('webpack-node-externals')
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const utils = require('./utils')
+const path = require('path');
+const webpack = require('webpack');
+const nodeExternals = require('webpack-node-externals');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const utils = require('./utils');
 
 const webpackconfig = {
   /**
@@ -12,6 +12,9 @@ const webpackconfig = {
   target: 'node',
   entry: {
     server: path.join(utils.APP_PATH, 'index.js')
+  },
+  resolve: {
+    ...utils.getWebpackResolveConfig()
   },
   output: {
     filename: '[name].bundle.js',
@@ -35,7 +38,7 @@ const webpackconfig = {
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV:
-          process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'prod' ? 'production' : 'development'
+          process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'prod' ? 'production' : `'development'`
       }
     })
   ],
@@ -55,6 +58,6 @@ const webpackconfig = {
     setImmediate: true,
     path: true
   }
-}
+};
 
-module.exports = webpackconfig
+module.exports = webpackconfig;
