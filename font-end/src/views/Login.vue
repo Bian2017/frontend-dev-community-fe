@@ -120,7 +120,7 @@ export default {
     if (localStorage.getItem("sid")) {
       sid = localStorage.getItem("sid");
     } else {
-      // uuid: 全球唯一
+      // uuid: 通用唯一识别码，具有唯一性
       sid = uuid();
       localStorage.setItem("sid", sid);
     }

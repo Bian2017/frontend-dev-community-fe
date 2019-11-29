@@ -8,7 +8,7 @@ class LoginController {
     const { body } = ctx.request;
 
     try {
-      let result = await send({
+      const result = await send({
         code: '1234', // 验证码
         // 30分钟过期
         expire: moment()

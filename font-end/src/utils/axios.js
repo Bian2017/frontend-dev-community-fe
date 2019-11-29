@@ -39,9 +39,7 @@ class HttpRequest {
         return Promise.reject(response);
       },
       error => {
-        debugger;
         errorHandle(error);
-
         return Promise.reject(error);
       }
     );

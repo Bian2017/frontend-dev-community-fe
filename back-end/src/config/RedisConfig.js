@@ -1,3 +1,6 @@
+/**
+ * Redis 配置
+ */
 import redis from 'redis';
 import { promisifyAll } from 'bluebird';
 import config from './index';
@@ -8,28 +11,44 @@ const options = {
   password: config.REDIS.password,
   // 当给Redis传递二进制的buffer时候，redis server会在回调中将buffer返回回来，而不是将它转换为string。
   detect_buffers: true,
-  // 采用官方推荐
+  // 采用官方推荐的重试策略
   retry_strategy: function(options) {
     if (options.error && options.error.code === 'ECONNREFUSED') {
-      // End reconnecting on a specific error and flush all commands with
-      // a individual error
       return new Error('The server refused the connection');
     }
+
     if (options.total_retry_time > 1000 * 60 * 60) {
-      // End reconnecting after a specific timeout and flush all commands
-      // with a individual error
       return new Error('Retry time exhausted');
     }
+
     if (options.attempt > 10) {
-      // End reconnecting with built in error
       return undefined;
     }
+
     // reconnect after
     return Math.min(options.attempt * 100, 3000);
   }
 };
 
-// const client = redis.createClient(options);
+/**
+ * Bluebird 的 Promise.promisifyAll 方法可以为一个对象的属性中的所有方法创建一个对应的使用 Promise 的版本。
+ *
+ * 原理：
+ * ```javascript
+ * // 获取对象的所有方法
+ * var keys = util.inheritedDataKeys(target);
+ *   for (var i = 0; i < keys.length; ++i) {
+ *       var value = target[keys[i]];
+ *       if (keys[i] !== "constructor" &&
+ *           util.isClass(value)) {
+ *           // suffix默认值为Async。此处将所有方法转化为promise，并添加Async后缀
+ *           promisifyAll(value.prototype, suffix, filter, promisifier,
+ *               multiArgs);
+ *           promisifyAll(value, suffix, filter, promisifier, multiArgs);
+ *       }
+ *   }
+ * ```
+ */
 const client = promisifyAll(redis.createClient(options));
 
 client.on('error', err => {
@@ -43,31 +62,23 @@ const setValue = (key, value, time) => {
 
   if (typeof value === 'string') {
     if (typeof time !== undefined) {
-      client.set(key, value, 'EX', time);
+      client.set(key, value, 'EX', time); // 设置过期时间
     } else {
       client.set(key, value);
     }
   } else if (typeof value === 'object') {
     // 使用JSON.stringify转换对象，会消耗一定性能。所以使用Hash表
     Object.keys(value).forEach(item => {
-      // redis.print: 打印设置成功之后的系统返回回来的日志
-      client.hset(key, item, value[item], redis.print);
+      client.hset(key, item, value[item], redis.print); // redis.print: 打印设置成功之后的系统返回回来的日志
     });
   }
 };
-
-// const { promisify } = require('util');
-// const getAsync = promisify(client.get).bind(client);
 
 const getValue = key => {
   return client.getAsync(key);
 };
 
 const getHValue = key => {
-  // v8 Promisify methods use util, must node > 8
-  // return promisify(client.hgetall).bind(client)(key);
-
-  // bluebird async
   return client.hgetallAsync(key);
 };
 
