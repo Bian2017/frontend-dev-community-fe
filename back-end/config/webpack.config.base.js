@@ -37,8 +37,9 @@ const webpackconfig = {
     // 允许创建全局常量，用于webpack在打包的时候使用
     new webpack.DefinePlugin({
       'process.env': {
+        // DefinePlugin替换的时候是取的字符里的值，若想替换成字符串，还需在外面包裹一层。
         NODE_ENV:
-          process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'prod' ? 'production' : `'development'`
+          process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'prod' ? "'production'" : "'development'"
       }
     })
   ],
