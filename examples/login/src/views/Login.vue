@@ -98,6 +98,7 @@
 </template>
 
 <script>
+import uuid from "uuid/v4";
 import { ValidationProvider } from "vee-validate";
 import { getCaptchaAsync } from "@/services/login";
 
@@ -115,11 +116,23 @@ export default {
     ValidationProvider
   },
   mounted() {
+    let sid = "";
+    if (localStorage.getItem("sid")) {
+      sid = localStorage.getItem("sid");
+    } else {
+      // uuid: 全球唯一
+      sid = uuid();
+      localStorage.setItem("sid", sid);
+    }
+    console.log("sid:", sid);
+    this.$store.commit("setSid", sid);
     this.getCaptcha();
   },
   methods: {
     getCaptcha() {
-      getCaptchaAsync().then(res => {
+      const { sid } = this.$store.state;
+
+      getCaptchaAsync(sid).then(res => {
         this.svgCaptcha = res;
       });
     }

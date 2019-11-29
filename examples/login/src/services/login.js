@@ -1,7 +1,7 @@
-import request from '@/utils/request'
+import request from "@/utils/request";
 
-export const getCaptchaAsync = async () => request.get('/captcha')
+export const getCaptchaAsync = sid => request.get("/captcha", { params: { sid } });
 
-export const forgetPasswordAsync = async params => request.post('/forget', params)
+export const forgetPasswordAsync = async params => request.post("/forget", params);
 
-export default {}
+export default {};

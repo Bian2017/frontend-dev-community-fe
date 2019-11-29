@@ -10,6 +10,7 @@
   "dependencies": {
     "axios": "^0.19.0",
     "core-js": "^3.4.2",
+    "uuid": "^3.3.3",
     "vee-validate": "^3.1.1",
     "vue": "^2.6.10",
     "vue-router": "^3.1.3",
