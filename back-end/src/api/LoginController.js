@@ -27,6 +27,17 @@ class LoginController {
       console.log('e:', e);
     }
   }
+
+  /**
+   * 登录：
+   * + 接收用户数据；
+   * + 验证图片验证码的时效性、正确性
+   * + 验证用户账号、密码是否正确
+   * + 返回token
+   *
+   * @param {*} ctx
+   */
+  async login(ctx) {}
 }
 
 export default new LoginController();
