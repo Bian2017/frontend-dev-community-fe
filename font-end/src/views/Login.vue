@@ -69,6 +69,7 @@
                   </div>
 
                   <div class="layui-form-item">
+                    <!-- 校验失败不会调用then方法 -->
                     <button class="layui-btn" type="button" @click="validate().then(doLogin)">立即登录</button>
                     <span style="padding-left:20px;">
                       <router-link :to="{ name: 'forget' }">忘记密码?</router-link>
@@ -119,6 +120,9 @@ export default {
     ValidationObserver
   },
   mounted() {
+    // 取到这个Vue组件
+    window.vue = this;
+
     let sid = "";
     if (localStorage.getItem("sid")) {
       sid = localStorage.getItem("sid");
@@ -148,6 +152,8 @@ export default {
           password: this.password,
           verifyCode: this.verificationCode,
           sid: this.$store.state.sid
+        }).then(res => {
+          console.log("登录结果:", res);
         });
       }
     }

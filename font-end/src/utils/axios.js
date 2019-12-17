@@ -28,10 +28,11 @@ class HttpRequest {
     // 响应拦截
     this.instance.interceptors.response.use(
       response => {
+        // 历史背景：2G移动时代网关会将非200状态码的响应都拦截
         if (response.status === 200) {
           const { data } = response;
 
-          if (data.code === 0) {
+          if (data.code === 200) {
             return Promise.resolve(response.data.data);
           }
         }
