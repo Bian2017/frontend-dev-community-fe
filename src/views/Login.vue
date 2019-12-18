@@ -11,16 +11,16 @@
         <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
           <div class="layui-tab-item layui-show">
             <div class="layui-form layui-form-pane">
-              <validation-observer ref="observer" v-slot="{validate}">
+              <validation-observer ref="observer" v-slot="{ validate }">
                 <form method="post">
                   <div class="layui-form-item">
-                    <label for="email" class="layui-form-label">邮箱</label>
-                    <validation-provider name="email" rules="required|email" v-slot="{ errors }">
+                    <label for="username" class="layui-form-label">用户名</label>
+                    <validation-provider name="username" rules="required|email" v-slot="{ errors }">
                       <div class="layui-input-inline">
                         <input
                           type="text"
-                          name="email"
-                          v-model="email"
+                          name="username"
+                          v-model="username"
                           placeholder="请输入邮箱"
                           autocomplete="off"
                           class="layui-input"
@@ -109,7 +109,7 @@ export default {
   name: "login",
   data() {
     return {
-      email: "",
+      username: "",
       password: "",
       verificationCode: "", // 验证码
       svgCaptcha: ""
@@ -120,9 +120,7 @@ export default {
     ValidationObserver
   },
   mounted() {
-    // 取到这个Vue组件
-    window.vue = this;
-
+    // window.vue = this; // 如何在console窗口取到这个Vue组件
     let sid = "";
     if (localStorage.getItem("sid")) {
       sid = localStorage.getItem("sid");
@@ -131,7 +129,7 @@ export default {
       sid = uuid();
       localStorage.setItem("sid", sid);
     }
-    console.log("sid:", sid);
+
     this.$store.commit("setSid", sid);
     this.getCaptcha();
   },
@@ -148,13 +146,32 @@ export default {
 
       if (isValid) {
         loginAsync({
-          email: this.email,
+          username: this.username,
           password: this.password,
-          verifyCode: this.verificationCode,
+          code: this.verificationCode,
           sid: this.$store.state.sid
-        }).then(res => {
-          console.log("登录结果:", res);
-        });
+        })
+          .then(() => {
+            this.username = "";
+            this.password = "";
+            this.verificationCode = "";
+
+            requestAnimationFrame(() => {
+              this.$refs.observer.reset();
+            });
+          })
+          .catch(err => {
+            const { msg, code } = err.data;
+
+            if (code === 401) {
+              // 利用服务端进行验证码校验(Server Side Validation)
+              this.$refs.observer.setErrors({
+                verificationCode: [msg]
+              });
+            } else {
+              this.$alert(msg);
+            }
+          });
       }
     }
   }
