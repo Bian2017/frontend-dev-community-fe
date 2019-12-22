@@ -32,7 +32,7 @@ class HttpRequest {
         if (response.status === 200) {
           const { data } = response;
 
-          if (data.code === 200) {
+          if (`${data.code}` === `200`) {
             return Promise.resolve(response.data.data);
           }
         }

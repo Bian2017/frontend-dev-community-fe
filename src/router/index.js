@@ -1,39 +1,47 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import Vue from "vue";
+import VueRouter from "vue-router";
 
 /**
  * 懒加载
  *
  * 在注释中提供 webpackChunkName，这样将拆分出来的 bundle 命名为 [name].bundle.js，而不是 [id].bundle.js
  */
-const Login = () => import(/* webpackChunkName: 'login' */ '../views/Login.vue')
-const Reg = () => import(/* webpackChunkName: 'reg' */ '../views/Reg.vue')
-const Forget = () => import(/* webpackChunkName: 'forget' */ '../views/Forget.vue')
+const Login = () => import(/* webpackChunkName: 'login' */ "../views/Login.vue");
+const Reg = () => import(/* webpackChunkName: 'reg' */ "../views/Reg.vue");
+const Forget = () => import(/* webpackChunkName: 'forget' */ "../views/Forget.vue");
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/login',
-    name: 'login',
+    path: "/login",
+    name: "login",
     component: Login
   },
   {
-    path: '/reg',
-    name: 'reg',
-    component: Reg
+    path: "/reg",
+    name: "reg",
+    component: Reg,
+    // 添加路由守卫，防止当前页面无sid
+    beforeEnter: (to, from, next) => {
+      if (from.name === "login") {
+        next();
+      } else {
+        next("/login");
+      }
+    }
   },
   {
-    path: '/forget',
-    name: 'forget',
+    path: "/forget",
+    name: "forget",
     component: Forget
   }
-]
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
   routes
-})
+});
 
-export default router
+export default router;

@@ -47,17 +47,13 @@
                   </div>
 
                   <div class="layui-form-item">
-                    <label for="verificationCode" class="layui-form-label">验证码</label>
-                    <validation-provider
-                      name="verificationCode"
-                      rules="required|length:4"
-                      v-slot="{ errors }"
-                    >
+                    <label for="code" class="layui-form-label">验证码</label>
+                    <validation-provider name="code" rules="required|length:4" v-slot="{ errors }">
                       <div class="layui-input-inline">
                         <input
                           type="text"
-                          name="verificationCode"
-                          v-model="verificationCode"
+                          name="code"
+                          v-model="code"
                           placeholder="请输入验证码"
                           autocomplete="off"
                           class="layui-input"
@@ -111,7 +107,7 @@ export default {
     return {
       username: "",
       password: "",
-      verificationCode: "", // 验证码
+      code: "", // 验证码
       svgCaptcha: ""
     };
   },
@@ -148,13 +144,13 @@ export default {
         loginAsync({
           username: this.username,
           password: this.password,
-          code: this.verificationCode,
+          code: this.code,
           sid: this.$store.state.sid
         })
           .then(() => {
             this.username = "";
             this.password = "";
-            this.verificationCode = "";
+            this.code = "";
 
             requestAnimationFrame(() => {
               this.$refs.observer.reset();
@@ -163,10 +159,10 @@ export default {
           .catch(err => {
             const { msg, code } = err.data;
 
-            if (code === 401) {
+            if (`${code}` === "500") {
               // 利用服务端进行验证码校验(Server Side Validation)
               this.$refs.observer.setErrors({
-                verificationCode: [msg]
+                code: [msg]
               });
             } else {
               this.$alert(msg);
