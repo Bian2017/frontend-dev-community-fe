@@ -4,10 +4,10 @@
 import axios from "axios";
 import errorHandle from "./errorHandle";
 
-/* eslint class-methods-use-this: ["error", { "exceptMethods": ["interceptors"] }] */
 class HttpRequest {
   constructor(baseUrl) {
     this.baseUrl = baseUrl;
+    this.instance = null;
   }
 
   // 获取内部配置
@@ -24,14 +24,15 @@ class HttpRequest {
   }
 
   // 设定拦截器
-  interceptors(instance) {
+  interceptors() {
     // 响应拦截
-    instance.interceptors.response.use(
+    this.instance.interceptors.response.use(
       response => {
+        // 历史背景：2G移动时代网关会将非200状态码的响应都拦截
         if (response.status === 200) {
           const { data } = response;
 
-          if (data.code === 0) {
+          if (`${data.code}` === `200`) {
             return Promise.resolve(response.data.data);
           }
         }
@@ -39,9 +40,7 @@ class HttpRequest {
         return Promise.reject(response);
       },
       error => {
-        debugger;
         errorHandle(error);
-
         return Promise.reject(error);
       }
     );
@@ -49,21 +48,21 @@ class HttpRequest {
 
   // 创建实例
   request(options) {
-    const instance = axios.create();
+    if (!this.instance) {
+      this.instance = axios.create();
+      this.interceptors();
+    }
     const newOpts = Object.assign(this.getInsideConfig(), options);
 
-    this.interceptors(instance);
-    return instance(newOpts);
+    return this.instance(newOpts);
   }
 
   get(url, config) {
-    const options = {
+    return this.request({
       method: "get",
       url,
       ...config
-    };
-
-    return this.request(options);
+    });
   }
 
   post(url, data) {

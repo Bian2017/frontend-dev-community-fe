@@ -19,7 +19,8 @@ module.exports = {
         ignore: ["^@/"] // 解决eslint不能识别webpack的路径别名
       }
     ],
-    "class-methods-use-this": 0
+    "class-methods-use-this": 0,
+    "no-param-reassign": 0
   },
   parserOptions: {
     parser: "babel-eslint"

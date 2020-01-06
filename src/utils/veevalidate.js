@@ -17,9 +17,9 @@ localize("zh_CN", {
   names: {
     email: "邮箱",
     password: "密码",
-    nickname: "昵称",
+    name: "昵称",
     username: "用户名",
-    verificationCode: "验证码"
+    code: "验证码"
   },
   // 可以针对不同的规则name设定自定义消息
   fields: {
@@ -27,6 +27,9 @@ localize("zh_CN", {
     email: {
       // 针对规则的message覆盖上面的全局定义消息
       email: "请输入正确的{_field_}"
+    },
+    password: {
+      confirmed: "前后两次密码请保持一致"
     }
   }
 });

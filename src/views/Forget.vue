@@ -73,17 +73,13 @@
                 </div>
 
                 <div class="layui-form-item">
-                  <label for="verificationCode" class="layui-form-label">验证码</label>
-                  <ValidationProvider
-                    name="verificationCode"
-                    rules="required|length:4"
-                    v-slot="{ errors }"
-                  >
+                  <label for="code" class="layui-form-label">验证码</label>
+                  <ValidationProvider name="code" rules="required|length:4" v-slot="{ errors }">
                     <div class="layui-input-inline">
                       <input
                         type="text"
-                        name="verificationCode"
-                        v-model="verificationCode"
+                        name="code"
+                        v-model="code"
                         placeholder="请输入验证码"
                         autocomplete="off"
                         class="layui-input"
@@ -118,7 +114,7 @@ export default {
   data() {
     return {
       email: "",
-      verificationCode: "", // 验证码
+      code: "", // 验证码
       svgCaptcha: ""
     };
   },
