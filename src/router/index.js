@@ -1,6 +1,8 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 
+const Home = () => import("../views/Home.vue");
+
 /**
  * 懒加载
  *
@@ -13,6 +15,11 @@ const Forget = () => import(/* webpackChunkName: 'forget' */ "../views/Forget.vu
 Vue.use(VueRouter);
 
 const routes = [
+  {
+    path: "/",
+    name: "home",
+    component: Home
+  },
   {
     path: "/login",
     name: "login",
