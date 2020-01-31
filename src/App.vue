@@ -23,4 +23,9 @@ export default {
 @import "./assets/layui/css/layui.css";
 @import "./assets/css/global.css";
 @import "./assets/layui/css/modules/layer/default/layer.css";
+
+// 公共样式
+.gray {
+  color: #999;
+}
 </style>
