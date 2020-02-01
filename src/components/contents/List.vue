@@ -33,17 +33,45 @@ export default {
       limit: 20,
       catalog: "",
       lists: [],
-      isEnd: false,
-      isRepeat: false // 减少重复请求
+      isEnd: false, // 已无数据
+      isRepeat: false, // 减少重复请求
+      current: "" // 避免重复执行
     };
   },
   components: {
     ListItem
   },
+  watch: {
+    current() {
+      this.init();
+    },
+    $route() {
+      const { catalog } = this.$route.params;
+
+      if (typeof catalog !== "undefined" && catalog !== "") {
+        this.catalog = catalog;
+      }
+
+      this.init();
+    }
+  },
   mounted() {
+    const { catalog } = this.$route.params;
+
+    if (typeof catalog !== "undefined" && catalog !== "") {
+      this.catalog = catalog;
+    }
+
     this.getPostList();
   },
   methods: {
+    init() {
+      // 清空变量，获取新的帖子列表
+      this.page = 0;
+      this.isEnd = false;
+      this.lists = [];
+      this.getPostList();
+    },
     getPostList() {
       if (this.isRepeat) return;
       if (this.isEnd) return;
@@ -87,6 +115,12 @@ export default {
       this.getPostList();
     },
     search(val) {
+      // 避免重复执行search方法
+      if (typeof val === "undefined" && this.current === "") {
+        return;
+      }
+
+      this.current = val;
       switch (val) {
         // 未结贴
         case 0:
@@ -115,6 +149,7 @@ export default {
         default:
           this.status = "";
           this.tag = "";
+          this.current = "";
           break;
       }
     }
