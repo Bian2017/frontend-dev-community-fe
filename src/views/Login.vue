@@ -147,7 +147,9 @@ export default {
           code: this.code,
           sid: this.$store.state.sid
         })
-          .then(() => {
+          .then(res => {
+            this.$store.commit("setUserInfo", res);
+            this.$store.commit("setIsLogin", true);
             this.username = "";
             this.password = "";
             this.code = "";
@@ -155,6 +157,7 @@ export default {
             requestAnimationFrame(() => {
               this.$refs.observer.reset();
             });
+            this.$router.push({ name: "index" });
           })
           .catch(err => {
             const { msg, code } = err.data;
