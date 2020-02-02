@@ -54,7 +54,8 @@
 
         <!-- 登入后的状态 -->
         <template v-else>
-          <li class="layui-nav-item">
+          <!-- 扩大hover区域 -->
+          <li class="layui-nav-item" @mouseover="show()" @mouseleave="hide()">
             <a class="fly-nav-avatar" href="javascript:;">
               <cite class="layui-hide-xs">{{userInfo.name}}</cite>
               <!-- <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i> -->
@@ -64,7 +65,12 @@
               >VIP{{userInfo.isVip}}</i>
               <img :src="'http://localhost:3001' + userInfo.pic" />
             </a>
-            <dl class="layui-nav-child">
+
+            <!-- 下拉菜单 -->
+            <dl
+              class="layui-nav-child layui-anim layui-anim-upbit"
+              :class="{'layui-show': isHover}"
+            >
               <dd>
                 <a href="user/set.html">
                   <i class="layui-icon">&#xe620;</i>基本设置
@@ -95,6 +101,12 @@
 <script>
 export default {
   name: "Header",
+  data() {
+    return {
+      isHover: false,
+      hoverCtrl: {}
+    };
+  },
   computed: {
     isShow() {
       return this.$store.state.isLogin;
@@ -107,6 +119,26 @@ export default {
           isVip: 0
         }
       );
+    }
+  },
+  methods: {
+    show() {
+      // 当用户的鼠标移入头像的时候，显示下拉菜单
+      clearInterval(this.hoverCtrl);
+      this.hoverCtrl = setTimeout(() => {
+        this.isHover = true;
+      }, 200);
+    },
+    hide() {
+      /**
+       * 当用户的鼠标移出头像的时候，隐藏操作菜单。
+       *
+       * 注意：通过延迟操作以及扩大hover区域来解决下拉菜单消失的问题！！！
+       */
+      clearInterval(this.hoverCtrl);
+      this.hoverCtrl = setTimeout(() => {
+        this.isHover = true;
+      }, 500);
     }
   }
 };
