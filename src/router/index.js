@@ -15,6 +15,15 @@ const Index = () => import(/* webpackChunkName: 'index' */ "../views/channels/In
 const Template1 = () =>
   import(/* webpackChunkName: 'template1' */ "../views/channels/Template1.vue");
 const Center = () => import(/* webpackChunkName: 'center' */ "../views/Center.vue");
+const UserCenter = () =>
+  import(/* webpackChunkName: 'user-center' */ "../components/user/Center.vue");
+const UserSettings = () =>
+  import(/* webpackChunkName: 'user-settings' */ "../components/user/Settings.vue");
+const UserPosts = () => import(/* webpackChunkName: 'user-posts' */ "../components/user/Posts.vue");
+const UserMsg = () => import(/* webpackChunkName: 'user-msg' */ "../components/user/Msg.vue");
+const UserOthers = () =>
+  import(/* webpackChunkName: 'user-others' */ "../components/user/Others.vue");
+const UserHome = () => import(/* webpackChunkName: 'user-others' */ "../views/UserHome.vue");
 
 Vue.use(VueRouter);
 
@@ -59,9 +68,42 @@ const routes = [
     component: Forget
   },
   {
+    path: "/user/:uid",
+    name: "home",
+    props: true,
+    component: UserHome // 用户主页
+  },
+  {
     path: "/center",
-    name: "center",
-    component: Center
+    component: Center,
+    linkExactActiveClass: "layui-this",
+    children: [
+      {
+        path: "",
+        name: "center",
+        component: UserCenter
+      },
+      {
+        path: "settings",
+        name: "settings",
+        component: UserSettings
+      },
+      {
+        path: "posts",
+        name: "posts",
+        component: UserPosts
+      },
+      {
+        path: "msg",
+        name: "msg",
+        component: UserMsg
+      },
+      {
+        path: "others",
+        name: "others",
+        component: UserOthers
+      }
+    ]
   }
 ];
 
