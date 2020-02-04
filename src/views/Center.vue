@@ -3,13 +3,13 @@
     <ul class="layui-nav layui-nav-tree" lay-filter="test">
       <!-- 侧边导航: <ul class="layui-nav layui-nav-tree layui-nav-side"> -->
       <li class="layui-nav-item" v-for="(item, index) in lists" :key="'center'+ index">
-        <router-link :to="{name: item.link}">
+        <router-link :to="{name: item.link}" :active-class="item.activeClass">
           <i class="iconfe" :class="item.icon"></i>
           {{item.name}}
         </router-link>
       </li>
-      <router-view></router-view>
     </ul>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -32,7 +32,8 @@ export default {
         {
           name: "基本设置",
           icon: "icon-Settingscontroloptions",
-          link: "settings"
+          link: "info", // 跳转至我的资料页面路由上
+          activeClass: "layui-this" // 该页面嵌套子路由，当跳转子路由时，让菜单栏该选项依旧高亮
         },
         {
           name: "我的帖子",

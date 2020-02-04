@@ -24,6 +24,14 @@ const UserMsg = () => import(/* webpackChunkName: 'user-msg' */ "../components/u
 const UserOthers = () =>
   import(/* webpackChunkName: 'user-others' */ "../components/user/Others.vue");
 const UserHome = () => import(/* webpackChunkName: 'user-others' */ "../views/UserHome.vue");
+const MyInfo = () =>
+  import(/* webpackChunkName: 'my-info' */ "../components/user/settings/MyInfo.vue");
+const Accounts = () =>
+  import(/* webpackChunkName: 'accounts' */ "../components/user/settings/Accounts.vue");
+const Password = () =>
+  import(/* webpackChunkName: 'password' */ "../components/user/settings/Password.vue");
+const PicUpload = () =>
+  import(/* webpackChunkName: 'pic-upload' */ "../components/user/settings/PicUpload.vue");
 
 Vue.use(VueRouter);
 
@@ -86,7 +94,29 @@ const routes = [
       {
         path: "settings",
         name: "settings",
-        component: UserSettings
+        component: UserSettings,
+        children: [
+          {
+            path: "",
+            name: "info",
+            component: MyInfo
+          },
+          {
+            path: "account",
+            name: "account",
+            component: Accounts
+          },
+          {
+            path: "password",
+            name: "password",
+            component: Password
+          },
+          {
+            path: "picupload",
+            name: "picupload",
+            component: PicUpload
+          }
+        ]
       },
       {
         path: "posts",
