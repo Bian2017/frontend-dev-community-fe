@@ -32,6 +32,10 @@ const Password = () =>
   import(/* webpackChunkName: 'password' */ "../components/user/settings/Password.vue");
 const PicUpload = () =>
   import(/* webpackChunkName: 'pic-upload' */ "../components/user/settings/PicUpload.vue");
+const MyPost = () =>
+  import(/* webpackChunkName: 'my-post' */ "../components/user/posts/MyPost.vue");
+const MyCollection = () =>
+  import(/* webpackChunkName: 'my-collection' */ "../components/user/posts/MyCollection.vue");
 
 Vue.use(VueRouter);
 
@@ -121,7 +125,19 @@ const routes = [
       {
         path: "posts",
         name: "posts",
-        component: UserPosts
+        component: UserPosts,
+        children: [
+          {
+            path: "",
+            name: "mypost",
+            component: MyPost
+          },
+          {
+            path: "mycollection",
+            name: "mycollection",
+            component: MyCollection
+          }
+        ]
       },
       {
         path: "msg",

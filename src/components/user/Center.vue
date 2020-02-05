@@ -16,76 +16,14 @@
           <div class="title">快捷方式</div>
           <div class="content" style="height: auto;">
             <ul class="layui-row layui-col-space10">
-              <li class="layui-col-sm3 layui-col-xs4">
-                <a href>
-                  <div class="layui-icon layui-icon-set shortcut"></div>
-                  <span>修改密码</span>
-                </a>
-              </li>
-              <li class="layui-col-sm3 layui-col-xs4">
-                <a href>
-                  <div class="layui-icon layui-icon-set shortcut"></div>
-                  <span>修改密码</span>
-                </a>
-              </li>
-              <li class="layui-col-sm3 layui-col-xs4">
-                <a href>
-                  <div class="layui-icon layui-icon-set shortcut"></div>
-                  <span>修改密码</span>
-                </a>
-              </li>
-              <li class="layui-col-sm3 layui-col-xs4">
-                <a href>
-                  <div class="layui-icon layui-icon-set shortcut"></div>
-                  <span>修改密码</span>
-                </a>
-              </li>
-              <li class="layui-col-sm3 layui-col-xs4">
-                <a href>
-                  <div class="layui-icon layui-icon-set shortcut"></div>
-                  <span>修改密码</span>
-                </a>
-              </li>
-              <li class="layui-col-sm3 layui-col-xs4">
-                <a href>
-                  <div class="layui-icon layui-icon-set shortcut"></div>
-                  <span>修改密码</span>
-                </a>
-              </li>
-              <li class="layui-col-sm3 layui-col-xs4">
-                <a href>
-                  <div class="layui-icon layui-icon-set shortcut"></div>
-                  <span>修改密码</span>
-                </a>
-              </li>
-              <li class="layui-col-sm3 layui-col-xs4">
-                <a href>
-                  <div class="layui-icon layui-icon-set shortcut"></div>
-                  <span>修改密码</span>
-                </a>
-              </li>
-              <li class="layui-col-sm3 layui-col-xs4">
-                <a href>
-                  <div class="layui-icon layui-icon-set shortcut"></div>
-                  <span>修改密码</span>
-                </a>
-              </li>
-              <li class="layui-col-sm3 layui-col-xs4">
-                <a href>
-                  <div class="layui-icon layui-icon-set shortcut"></div>
-                  <span>修改密码</span>
-                </a>
-              </li>
-              <li class="layui-col-sm3 layui-col-xs4">
-                <a href>
-                  <div class="layui-icon layui-icon-set shortcut"></div>
-                  <span>修改密码</span>
-                </a>
-              </li>
-              <li class="layui-col-sm3 layui-col-xs4">
-                <a href>
-                  <div class="layui-icon layui-icon-set shortcut"></div>
-                  <span>修改密码</span>
+              <li
+                class="layui-col-sm3 layui-col-xs4"
+                v-for="(item, index) in lists"
+                :key="'center'+index"
+              >
+                <a>
+                  <div class="layui-icon" :class="item.icon"></div>
+                  <span>{{item.name}}</span>
                 </a>
               </li>
             </ul>
@@ -101,6 +39,60 @@ import Sign from "@/components/sidebar/Sign.vue";
 
 export default {
   name: "user-center",
+  data() {
+    return {
+      lists: [
+        {
+          icon: "layui-icon-set",
+          name: "修改信息"
+        },
+        {
+          icon: "layui-icon-face-smile",
+          name: "修改头像"
+        },
+        {
+          icon: "layui-icon-password",
+          name: "修改密码"
+        },
+        {
+          icon: "layui-icon-app",
+          name: "账号绑定"
+        },
+        {
+          icon: "layui-icon-add-circle",
+          name: "发布新帖"
+        },
+        {
+          icon: "layui-icon-share",
+          name: "查看分享"
+        },
+        {
+          icon: "layui-icon-username",
+          name: "我的帖子"
+        },
+        {
+          icon: "layui-icon-rate-solid",
+          name: "我的收藏"
+        },
+        {
+          icon: "layui-icon-template-1",
+          name: "其他资料"
+        },
+        {
+          icon: "layui-icon-login-wechat",
+          name: "关注公共号"
+        },
+        {
+          icon: "layui-icon-read",
+          name: "文档"
+        },
+        {
+          icon: "layui-icon-user",
+          name: "后台管理"
+        }
+      ]
+    };
+  },
   components: {
     Sign
   }
@@ -169,7 +161,7 @@ li {
   padding: 5px;
 }
 
-.shortcut {
+.layui-icon {
   background-color: #2f9688;
   width: 100%;
   height: 60px;
