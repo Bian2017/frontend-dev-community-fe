@@ -28,7 +28,7 @@ export default {
   },
   mounted() {
     getLinks().then(res => {
-      this.lists = res;
+      this.lists = res.data;
     });
   }
 };

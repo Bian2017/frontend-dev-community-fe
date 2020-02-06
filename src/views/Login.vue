@@ -134,7 +134,7 @@ export default {
       const { sid } = this.$store.state;
 
       getCaptchaAsync(sid).then(res => {
-        this.svgCaptcha = res;
+        this.svgCaptcha = res.data;
       });
     },
     async doLogin() {
@@ -148,8 +148,10 @@ export default {
           sid: this.$store.state.sid
         })
           .then(res => {
-            this.$store.commit("setUserInfo", res);
+            console.log("res:", res);
+            this.$store.commit("setUserInfo", res.data);
             this.$store.commit("setIsLogin", true);
+            this.$store.commit("setToken", res.token);
             this.username = "";
             this.password = "";
             this.code = "";

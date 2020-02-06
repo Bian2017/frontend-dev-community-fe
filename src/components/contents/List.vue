@@ -89,17 +89,18 @@ export default {
 
       getList(options)
         .then(res => {
+          const { data } = res;
           this.isRepeat = false;
 
           // 小于20条则到最后一页
-          if (res.length < this.limit) {
+          if (data.length < this.limit) {
             this.isEnd = true;
           }
 
           if (this.lists.length === 0) {
-            this.lists = res;
+            this.lists = data;
           } else {
-            this.lists = this.lists.concat(res);
+            this.lists = this.lists.concat(data);
           }
         })
         .catch(err => {

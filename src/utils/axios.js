@@ -69,7 +69,7 @@ class HttpRequest {
           const { data } = response;
 
           if (`${data.code}` === `200`) {
-            return Promise.resolve(response.data.data);
+            return Promise.resolve(data);
           }
         }
 

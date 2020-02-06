@@ -173,7 +173,7 @@ export default {
       const { sid } = this.$store.state;
 
       getCaptchaAsync(sid).then(res => {
-        this.svgCaptcha = res;
+        this.svgCaptcha = res.data;
       });
     },
     async doRegister() {

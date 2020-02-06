@@ -23,7 +23,7 @@ export default {
   },
   mounted() {
     getTips().then(res => {
-      this.lists = res;
+      this.lists = res.data;
     });
   }
 };

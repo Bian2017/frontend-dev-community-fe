@@ -124,7 +124,7 @@ export default {
   methods: {
     getCaptcha() {
       getCaptchaAsync().then(res => {
-        this.svgCaptcha = res;
+        this.svgCaptcha = res.data;
       });
     },
     submit() {

@@ -30,7 +30,7 @@ export default {
   },
   mounted() {
     getTop().then(res => {
-      this.lists = res;
+      this.lists = res.data;
     });
   }
 };

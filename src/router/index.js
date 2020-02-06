@@ -1,5 +1,8 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import jwt from "jsonwebtoken";
+import moment from "moment";
+import store from "@/store/index";
 
 const Home = () => import("../views/Home.vue");
 
@@ -88,6 +91,13 @@ const routes = [
   {
     path: "/center",
     component: Center,
+    /**
+     * 添加路由元信息，用来标注哪些路由是需要登录鉴权的。
+     * 避免在全局路由守卫处需要一一排除不需要登录鉴权页面的。
+     */
+    meta: {
+      requiresAuth: true
+    },
     linkExactActiveClass: "layui-this",
     children: [
       {
@@ -97,7 +107,6 @@ const routes = [
       },
       {
         path: "settings",
-        name: "settings",
         component: UserSettings,
         children: [
           {
@@ -124,7 +133,6 @@ const routes = [
       },
       {
         path: "posts",
-        name: "posts",
         component: UserPosts,
         children: [
           {
@@ -158,6 +166,41 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   linkExactActiveClass: "layui-this", // 全局配置 <router-link> 默认的精确激活的 class
   routes
+});
+
+// 添加全局路由守卫
+router.beforeEach((to, from, next) => {
+  // 取localStorage里面缓存的token信息和用户信息
+  const token = localStorage.getItem("token");
+
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
+  if (token !== "" && token !== null) {
+    const payload = jwt.decode(token);
+
+    // 判断token是否过期
+    if (moment().isBefore(moment(payload.exp * 1000))) {
+      store.commit("setToken", token);
+      store.commit("setUserInfo", userInfo);
+      store.commit("setIsLogin", true);
+    } else {
+      localStorage.clear();
+    }
+  }
+
+  // 查看是否有路由元信息，即是否需要鉴权认证
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    const { isLogin } = store.state;
+
+    if (isLogin) {
+      next();
+    } else {
+      next("/login");
+    }
+  } else {
+    // 公共用户页面，不需要用户登录
+    next();
+  }
 });
 
 export default router;
