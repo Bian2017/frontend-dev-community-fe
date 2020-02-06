@@ -27,8 +27,24 @@ export default {
   color: #999;
 }
 
+.orange {
+  color: #ff5722;
+}
+
+.pull-right {
+  float: right !important;
+}
+
+.pd0 {
+  padding: 0px !important;
+}
+
 .pd20 {
   padding: 20px;
+}
+
+.mr10 {
+  margin-right: 10px;
 }
 
 .mt20 {
