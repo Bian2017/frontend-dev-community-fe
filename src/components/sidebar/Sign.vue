@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import SignInfo from "./SignInfo.vue";
 import SignList from "./SignList.vue";
 import { createSign } from "@/services/user";
@@ -56,7 +57,7 @@ export default {
       isShow: false,
       showList: false,
       current: 0,
-      isSign: this.$store.state.userInfo.isSign ? this.$store.state.userInfo.isSign : false // 是否签到
+      isSign: false // 是否签到
     };
   },
   computed: {
@@ -90,6 +91,21 @@ export default {
       return result;
     }
   },
+  mounted() {
+    const { isSign } = this.$store.state.userInfo;
+    const { lastSign } = this.$store.state.userInfo;
+
+    const nowDate = moment().format("YYYY-MM-DD");
+    const lastDate = moment(lastSign).format("YYYY-MM-DD");
+    const diff = moment(nowDate).diff(moment(lastDate), "day");
+
+    // 如果用户上一次签到时间与当天的签到日期相差1天，允许用户进行签到
+    if (diff > 0 && isSign) {
+      this.isSign = false;
+    } else {
+      this.isSign = isSign;
+    }
+  },
   methods: {
     showInfo() {
       this.isShow = true;
@@ -106,7 +122,7 @@ export default {
     },
     sign() {
       if (!this.isLogin) {
-        this.$alert("请先登录");
+        this.$pop("shake", "请先登录");
         return;
       }
 
@@ -114,14 +130,25 @@ export default {
         .then(res => {
           const user = this.$store.state.userInfo;
 
-          this.isSign = true;
           user.favs = res.favs;
           user.count = res.count;
+
+          this.isSign = true;
+          user.isSign = true;
+          user.lastSign = res.lastSign;
           this.$store.commit("setUserInfo", user); // 更新UserInfo信息
+          this.$pop("", "签到成功");
         })
         .catch(err => {
           if (err.data.code === 500) {
-            this.$alert(err.data.msg);
+            const user = this.$store.state.userInfo;
+
+            this.isSign = true;
+            user.isSign = true;
+            user.lastSign = err.lastSign;
+            this.$store.commit("setUserInfo", user); // 更新UserInfo信息
+
+            this.$pop("", err.data.msg);
           }
         });
     }
