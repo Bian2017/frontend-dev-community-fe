@@ -11,138 +11,84 @@
       </a>
       <span class="fly-signin-days">
         已连续签到
-        <cite>16</cite>天
+        <cite>{{ count }}</cite>
+        天
       </span>
     </div>
     <div class="fly-panel-main fly-signin-main">
-      <button class="layui-btn layui-btn-danger" id="LAY_signin">今日签到</button>
-      <span>
-        可获得
-        <cite>5</cite>飞吻
-      </span>
-
-      <!-- 已签到状态 -->
-      <!--
-          <button class="layui-btn layui-btn-disabled">今日已签到</button>
-          <span>获得了<cite>20</cite>飞吻</span>
-      -->
+      <template v-if="!isSign">
+        <button class="layui-btn layui-btn-danger" @click="sign()">今日签到</button>
+        <span>
+          可获得
+          <cite>{{ favs }}</cite>
+          飞吻
+        </span>
+      </template>
+      <template v-else>
+        <!-- 已签到状态 -->
+        <button class="layui-btn layui-btn-disabled">今日已签到</button>
+        <span>
+          获得了
+          <cite>{{ favs }}</cite>
+          飞吻
+        </span>
+      </template>
     </div>
-    <div class="modal" v-show="isShow">
-      <div class="mask" @click="close()"></div>
-      <div class="layui-layer layui-layer-page info" :class="{ active: isShow }">
-        <div class="layui-layer-title">
-          签到说明
-          <div class="layui-icon layui-icon-close pull-right" @click="close()"></div>
-        </div>
-        <div class="layui-layer-content">
-          <div class="layui-text">
-            <blockquote class="layui-elem-quote">"签到"可获得的社区积分，规则如下</blockquote>
-            <table class="layui-table">
-              <thead>
-                <tr>
-                  <th>连续签到天数</th>
-                  <th>每天可获积分</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>&lt;5</td>
-                  <td>5</td>
-                </tr>
-                <tr>
-                  <td>&ge;5</td>
-                  <td>10</td>
-                </tr>
-                <tr>
-                  <td>&ge;15</td>
-                  <td>15</td>
-                </tr>
-                <tr>
-                  <td>&ge;30</td>
-                  <td>20</td>
-                </tr>
-                <tr>
-                  <td>&ge;100</td>
-                  <td>30</td>
-                </tr>
-                <tr>
-                  <td>&ge;365</td>
-                  <td>50</td>
-                </tr>
-              </tbody>
-            </table>
-            <div>
-              <p>中间若有间隔，则连续天数重新计算</p>
-              <p class="orange">不可复用程序自动签到，否则积分清零</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="modal" v-show="showList">
-      <div class="mask" @click="close()"></div>
-      <div class="layui-layer layui-layer-page info" :class="{ active: showList }">
-        <div class="layui-layer-title">
-          签到活跃榜 - TOP
-          <div class="layui-icon layui-icon-close pull-right" @click="close()"></div>
-        </div>
-        <div class="layui-layer-content pd0">
-          <div class="layui-tab layui-tab-brief">
-            <ul class="layui-tab-title">
-              <li :class="{ 'layui-this': current === 0 }" @click="choose(0)">最新签到</li>
-              <li :class="{ 'layui-this': current === 1 }" @click="choose(1)">今日最快</li>
-              <li :class="{ 'layui-this': current === 2 }" @click="choose(2)">总签到榜</li>
-            </ul>
-            <div class="layui-tab-content">
-              <ul class="layui-tab-item layui-show">
-                <li v-for="(item, index) in lists" :key="'sign' + index">
-                  <img src="/img/avatar.jpg" alt="" class="mr10" />
-                  <cite class="fly-link">{{ item.name }}</cite>
-                  <span class="fly-grey" v-if="current !== 2">签到于 {{ item.created }}</span>
-                  <span class="fly-grey" v-else>
-                    已经连续签到 <i class="orange">{{ item.count }}</i> 天
-                  </span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <sign-info :isShow="isShow" @closeModal="close()"></sign-info>
+    <sign-list :isShow="showList" @closeModal="close()"></sign-list>
   </div>
 </template>
 
 <script>
+import SignInfo from "./SignInfo.vue";
+import SignList from "./SignList.vue";
+import { createSign } from "@/services/user";
+
 export default {
   name: "sign",
+  components: {
+    SignInfo,
+    SignList
+  },
   data() {
     return {
+      isLogin: this.$store.state.isLogin,
       isShow: false,
       showList: false,
       current: 0,
-      lists: [
-        {
-          name: "test1",
-          count: 4,
-          created: "2020-01-01"
-        },
-        {
-          name: "test1",
-          count: 3,
-          created: "2020-01-01"
-        },
-        {
-          name: "test1",
-          count: 2,
-          created: "2020-01-01"
-        },
-        {
-          name: "test1",
-          count: 1,
-          created: "2020-01-01"
-        }
-      ]
+      isSign: this.$store.state.userInfo.isSign ? this.$store.state.userInfo.isSign : false // 是否签到
     };
+  },
+  computed: {
+    count() {
+      if (JSON.stringify(this.$store.state.userInfo) !== "{}") {
+        if (typeof this.$store.state.userInfo.count !== "undefined") {
+          return this.$store.state.userInfo.count;
+        }
+        return 0;
+      }
+      return 0;
+    },
+    favs() {
+      const cnt = parseInt(this.count, 10);
+      let result = 0;
+
+      if (cnt < 5) {
+        result = 5;
+      } else if (cnt >= 5 && cnt < 15) {
+        result = 10;
+      } else if (cnt >= 15 && cnt < 30) {
+        result = 15;
+      } else if (cnt >= 30 && cnt < 100) {
+        result = 20;
+      } else if (cnt >= 100 && cnt < 365) {
+        result = 30;
+      } else if (cnt >= 365) {
+        result = 50;
+      }
+
+      return result;
+    }
   },
   methods: {
     showInfo() {
@@ -156,14 +102,34 @@ export default {
       this.showList = false;
     },
     choose(val) {
-      console.log("val:", val);
       this.current = val;
+    },
+    sign() {
+      if (!this.isLogin) {
+        this.$alert("请先登录");
+        return;
+      }
+
+      createSign()
+        .then(res => {
+          const user = this.$store.state.userInfo;
+
+          this.isSign = true;
+          user.favs = res.favs;
+          user.count = res.count;
+          this.$store.commit("setUserInfo", user); // 更新UserInfo信息
+        })
+        .catch(err => {
+          if (err.data.code === 500) {
+            this.$alert(err.data.msg);
+          }
+        });
     }
   }
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 @keyframes bounceIn {
   0% {
     opacity: 0;
