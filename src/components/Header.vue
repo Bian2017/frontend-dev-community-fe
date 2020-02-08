@@ -147,7 +147,8 @@ export default {
           this.$store.commit("setToken", "");
           this.$store.commit("setUserInfo", "");
           this.$store.commit("setIsLogin", false);
-          this.$router.push("/");
+          // 添加回调，是解决报错“路由导航重复”
+          this.$router.push("/", () => {});
         },
         () => {}
       );

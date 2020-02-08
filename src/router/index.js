@@ -39,6 +39,7 @@ const MyPost = () =>
   import(/* webpackChunkName: 'my-post' */ "../components/user/posts/MyPost.vue");
 const MyCollection = () =>
   import(/* webpackChunkName: 'my-collection' */ "../components/user/posts/MyCollection.vue");
+const NotFound = () => import(/* webpackChunkName: 'not-found' */ "../views/NotFound.vue");
 
 Vue.use(VueRouter);
 
@@ -158,6 +159,14 @@ const routes = [
         component: UserOthers
       }
     ]
+  },
+  {
+    path: "/404",
+    component: NotFound
+  },
+  {
+    path: "*",
+    redirect: "/404"
   }
 ];
 
