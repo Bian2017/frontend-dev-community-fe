@@ -149,6 +149,7 @@ export default {
         })
           .then(res => {
             console.log("res:", res);
+            res.data.username = this.username; // 邮箱为敏感信息，未通过接口返回。故可在登录的时候，存储用户邮箱
             this.$store.commit("setUserInfo", res.data);
             this.$store.commit("setIsLogin", true);
             this.$store.commit("setToken", res.token);

@@ -1,15 +1,13 @@
+import qs from "qs";
 import request from "@/utils/request";
-import store from "@/store";
 
 // 用户签到
-// eslint-disable-next-line import/prefer-default-export
 export const createSign = () => {
-  const headers = {
-    Authorization: `Bearer ${store.state.token}`,
-    "Content-Type": "application/json"
-  };
-
-  return request.get("/user/fav", {
-    headers
-  });
+  return request.get("/user/fav");
 };
+
+// 更新用户基本资料
+export const updateUserInfo = data => request.post("/user/basic", data);
+
+// 确认修改用户名(邮箱)
+export const updateUsername = data => request.get(`/public/reset-email?${qs.stringify(data)}`);

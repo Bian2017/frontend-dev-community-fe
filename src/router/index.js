@@ -40,6 +40,8 @@ const MyPost = () =>
 const MyCollection = () =>
   import(/* webpackChunkName: 'my-collection' */ "../components/user/posts/MyCollection.vue");
 const NotFound = () => import(/* webpackChunkName: 'not-found' */ "../views/NotFound.vue");
+const Confirm = () => import(/* webpackChunkName: 'confirm' */ "../views/Confirm.vue");
+const Reset = () => import(/* webpackChunkName: 'reset' */ "../views/Reset.vue");
 
 Vue.use(VueRouter);
 
@@ -64,6 +66,16 @@ const routes = [
     path: "/login",
     name: "login",
     component: Login
+  },
+  {
+    path: "/confirm",
+    name: "confirm",
+    component: Confirm
+  },
+  {
+    path: "/reset",
+    name: "reset",
+    component: Reset
   },
   {
     path: "/reg",

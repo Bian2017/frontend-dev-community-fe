@@ -3,6 +3,8 @@
  */
 import axios from "axios";
 import errorHandle from "./errorHandle";
+import store from "@/store";
+import publicConfig from "@/config";
 
 const { CancelToken } = axios; // 用于取消网络请求
 
@@ -41,6 +43,19 @@ class HttpRequest {
     // 请求拦截
     this.instance.interceptors.request.use(
       config => {
+        let isPublic = false;
+
+        publicConfig.publicPath.map(path => {
+          isPublic = isPublic || path.test(config.url);
+
+          return path;
+        });
+
+        const { token } = store.state;
+        if (!isPublic && token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+
         const key = `${config.url}&${config.method}`;
 
         this.removePending(key, true);

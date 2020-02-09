@@ -43,8 +43,20 @@ export default {
   padding: 20px;
 }
 
+.pb30 {
+  padding-bottom: 30px;
+}
+
 .mr10 {
   margin-right: 10px;
+}
+
+.ml10 {
+  margin-left: 10px !important;
+}
+
+.mt10 {
+  margin-top: 10px;
 }
 
 .mt20 {
