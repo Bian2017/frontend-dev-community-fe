@@ -24,4 +24,7 @@ const getLinks = () => {
   return request.get("/public/links");
 };
 
-export { getList, getTop, getTips, getLinks };
+// 图片上传接口
+const uploadImg = formData => request.post("/content/upload", formData);
+
+export { getList, getTop, getTips, getLinks, uploadImg };

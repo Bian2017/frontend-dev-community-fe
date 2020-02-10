@@ -134,7 +134,7 @@ export default {
       const { sid } = this.$store.state;
 
       getCaptchaAsync(sid).then(res => {
-        this.svgCaptcha = res;
+        this.svgCaptcha = res.data;
       });
     },
     async doLogin() {
@@ -147,7 +147,12 @@ export default {
           code: this.code,
           sid: this.$store.state.sid
         })
-          .then(() => {
+          .then(res => {
+            console.log("res:", res);
+            res.data.username = this.username; // 邮箱为敏感信息，未通过接口返回。故可在登录的时候，存储用户邮箱
+            this.$store.commit("setUserInfo", res.data);
+            this.$store.commit("setIsLogin", true);
+            this.$store.commit("setToken", res.token);
             this.username = "";
             this.password = "";
             this.code = "";
@@ -155,6 +160,7 @@ export default {
             requestAnimationFrame(() => {
               this.$refs.observer.reset();
             });
+            this.$router.push({ name: "index" });
           })
           .catch(err => {
             const { msg, code } = err.data;

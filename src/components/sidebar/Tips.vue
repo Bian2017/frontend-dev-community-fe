@@ -3,17 +3,8 @@
     <h3 class="fly-panel-title">温馨通道</h3>
     <div class="fly-panel-main">
       <ul class="layui-clear quick-channel">
-        <li class="layui-col-xs6">
-          <a href target="_blank">通道</a>
-        </li>
-        <li class="layui-col-xs6">
-          <a href target="_blank">通道</a>
-        </li>
-        <li class="layui-col-xs6">
-          <a href target="_blank">通道</a>
-        </li>
-        <li class="layui-col-xs6">
-          <a href target="_blank">通道</a>
+        <li class="layui-col-xs6" v-for="(item, index) in lists" :key="'tips' + index">
+          <a :href="item.link" target="_blank">{{item.title}}</a>
         </li>
       </ul>
     </div>
@@ -21,8 +12,20 @@
 </template>
 
 <script>
+import { getTips } from "@/services/content";
+
 export default {
-  name: "tips"
+  name: "tips",
+  data() {
+    return {
+      lists: []
+    };
+  },
+  mounted() {
+    getTips().then(res => {
+      this.lists = res.data;
+    });
+  }
 };
 </script>
 

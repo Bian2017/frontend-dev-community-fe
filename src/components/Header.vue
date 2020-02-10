@@ -24,50 +24,66 @@
 
       <ul class="layui-nav fly-nav-user">
         <!-- 未登入的状态 -->
-        <li class="layui-nav-item">
-          <a class="iconfont icon-touxiang layui-hide-xs" href="../user/login.html"></a>
-        </li>
-        <li class="layui-nav-item">
-          <a href="../user/login.html">登入</a>
-        </li>
-        <li class="layui-nav-item">
-          <a href="../user/reg.html">注册</a>
-        </li>
-        <li class="layui-nav-item layui-hide-xs">
-          <a
-            href
-            onclick="layer.msg('正在通过QQ登入', {icon:16, shade: 0.1, time:0})"
-            title="QQ登入"
-            class="iconfont icon-qq"
-          ></a>
-        </li>
-        <li class="layui-nav-item layui-hide-xs">
-          <a
-            href
-            onclick="layer.msg('正在通过微博登入', {icon:16, shade: 0.1, time:0})"
-            title="微博登入"
-            class="iconfont icon-weibo"
-          ></a>
-        </li>
+        <template v-if="!isShow">
+          <li class="layui-nav-item">
+            <a class="iconfont icon-touxiang layui-hide-xs" href="../user/login.html"></a>
+          </li>
+          <li class="layui-nav-item">
+            <router-link :to="{name: 'login'}">登入</router-link>
+          </li>
+          <li class="layui-nav-item">
+            <router-link :to="{name: 'reg'}">注册</router-link>
+          </li>
+          <li class="layui-nav-item layui-hide-xs">
+            <a
+              href
+              onclick="layer.msg('正在通过QQ登入', {icon:16, shade: 0.1, time:0})"
+              title="QQ登入"
+              class="iconfont icon-qq"
+            ></a>
+          </li>
+          <li class="layui-nav-item layui-hide-xs">
+            <a
+              href
+              onclick="layer.msg('正在通过微博登入', {icon:16, shade: 0.1, time:0})"
+              title="微博登入"
+              class="iconfont icon-weibo"
+            ></a>
+          </li>
+        </template>
 
         <!-- 登入后的状态 -->
-        <!--
-      <li class="layui-nav-item">
-        <a class="fly-nav-avatar" href="javascript:;">
-          <cite class="layui-hide-xs">贤心</cite>
-          <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i>
-          <i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>
-          <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg">
-        </a>
-        <dl class="layui-nav-child">
-          <dd><a href="user/set.html"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
-          <dd><a href="user/message.html"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
-          <dd><a href="user/home.html"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
-          <hr style="margin: 5px 0;">
-          <dd><a href="/user/logout/" style="text-align: center;">退出</a></dd>
-        </dl>
-      </li>
-        -->
+        <template v-else>
+          <!-- 扩大hover区域 -->
+          <li class="layui-nav-item" @mouseover="show()" @mouseleave="hide()">
+            <a class="fly-nav-avatar" href="javascript:;">
+              <cite class="layui-hide-xs">{{userInfo.name}}</cite>
+              <!-- <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i> -->
+              <i
+                class="layui-badge fly-badge-vip layui-hide-xs"
+                v-show="userInfo.isVip !== '0'"
+              >VIP{{userInfo.isVip}}</i>
+              <img :src="'http://localhost:3001' + userInfo.pic" />
+            </a>
+
+            <!-- 下拉菜单 -->
+            <dl
+              class="layui-nav-child layui-anim layui-anim-upbit"
+              :class="{'layui-show': isHover}"
+            >
+              <dd v-for="(item, index) in lists" :key="'my'+index">
+                <router-link :to="{name: item.link}">
+                  <i class="layui-icon" :class="item.icon"></i>
+                  {{item.name}}
+                </router-link>
+              </dd>
+              <hr style="margin: 5px 0;" />
+              <dd>
+                <a href="javascript: void(0)" style="text-align: center;" @click="logout()">退出</a>
+              </dd>
+            </dl>
+          </li>
+        </template>
       </ul>
     </div>
   </div>
@@ -75,8 +91,81 @@
 
 <script>
 export default {
-  name: 'Header'
-}
+  name: "Header",
+  data() {
+    return {
+      isHover: false,
+      hoverCtrl: {},
+      lists: [
+        {
+          name: "基本设置",
+          icon: "layui-icon-set",
+          link: "info"
+        },
+        {
+          name: "我的消息",
+          icon: "layui-icon-notice",
+          link: "msg"
+        },
+        {
+          name: "我的主页",
+          icon: "layui-icon-home",
+          link: "center"
+        }
+      ]
+    };
+  },
+  computed: {
+    isShow() {
+      return this.$store.state.isLogin;
+    },
+    userInfo() {
+      return (
+        this.$store.state.userInfo || {
+          name: "",
+          pic: "",
+          isVip: 0
+        }
+      );
+    }
+  },
+  methods: {
+    show() {
+      // 当用户的鼠标移入头像的时候，显示下拉菜单
+      clearInterval(this.hoverCtrl);
+      this.hoverCtrl = setTimeout(() => {
+        this.isHover = true;
+      }, 200);
+    },
+    logout() {
+      // 因为token是无状态的，服务端不会存储token，所以只需本地清除token，即可实现退出功能
+      this.$confirm(
+        "确定退出吗?",
+        () => {
+          localStorage.clear();
+
+          this.$store.commit("setToken", "");
+          this.$store.commit("setUserInfo", "");
+          this.$store.commit("setIsLogin", false);
+          // 添加回调，是解决报错“路由导航重复”
+          this.$router.push("/", () => {});
+        },
+        () => {}
+      );
+    },
+    hide() {
+      /**
+       * 当用户的鼠标移出头像的时候，隐藏操作菜单。
+       *
+       * 注意：通过延迟操作以及扩大hover区域来解决下拉菜单消失的问题！！！
+       */
+      clearInterval(this.hoverCtrl);
+      this.hoverCtrl = setTimeout(() => {
+        this.isHover = true;
+      }, 500);
+    }
+  }
+};
 </script>
 
 <style>

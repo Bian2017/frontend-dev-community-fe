@@ -3,10 +3,7 @@
     <ul class="fly-list">
       <li v-for="(item, index) in items" :key="'listitem' + index">
         <a href="user/home.html" class="fly-avatar">
-          <img
-            src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"
-            alt="贤心"
-          />
+          <img :src="'http://localhost:3001'+item.uid.pic" alt="头像" />
         </a>
         <h2>
           <a class="layui-badge">{{ item.catalog }}</a>
@@ -27,7 +24,7 @@
             <i class="iconfont icon-kiss"></i>
             {{ item.fav }}
           </span>
-          <span class="layui-badge fly-badge-accept layui-hide-xs" v-show="item.status !== 0">已结</span>
+          <span class="layui-badge fly-badge-accept layui-hide-xs" v-show="item.status !== '0'">已结</span>
           <span class="fly-list-nums">
             <i class="iconfont icon-pinglun1" title="回答"></i>
             {{ item.answer }}
