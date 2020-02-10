@@ -47,6 +47,7 @@ export default {
   methods: {
     handleFaceClick(item) {
       this.$emit("addEvent", item);
+      this.$emit("closeEvent");
     },
     // 触发隐藏本组件的关闭事件，改变isShow状态
     handleBodyClick(e) {
@@ -58,7 +59,7 @@ export default {
 
       // 判断是否点击富文本框的表情
       if (!this.ctrl.contains(e.target)) {
-        // 判断是否点击到非控制Icon以为的地方
+        // 判断是否点击到非控制Icon以外的地方
         this.$emit("closeEvent");
       }
     }
@@ -67,9 +68,4 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.edit-content {
-  position: absolute;
-  top: 45px;
-  left: 0;
-}
 </style>

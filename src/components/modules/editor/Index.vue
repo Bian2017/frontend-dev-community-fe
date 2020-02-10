@@ -6,7 +6,7 @@
           <span @click="()=> {this.faceStatus = !this.faceStatus}" ref="face">
             <i class="iconfont icon-yxj-expression"></i>
           </span>
-          <span>
+          <span @click="()=> {this.imgStatus = !this.imgStatus}" ref="img">
             <i class="iconfont icon-tupian"></i>
           </span>
           <span>
@@ -25,20 +25,28 @@
       </div>
     </div>
     <face :isShow="faceStatus" @closeEvent="()=>{this.faceStatus = false}" :ctrl="this.$refs.face"></face>
+    <img-upload
+      :isShow="imgStatus"
+      @closeEvent="()=>{this.imgStatus = false}"
+      :ctrl="this.$refs.img"
+    ></img-upload>
   </div>
 </template>
 
 <script>
 import Face from "./Face.vue";
+import ImgUpload from "./ImgUpload.vue";
 
 export default {
   name: "Editor",
   components: {
-    Face
+    Face,
+    ImgUpload
   },
   data() {
     return {
-      faceStatus: false
+      faceStatus: false,
+      imgStatus: false
     };
   }
 };
@@ -93,5 +101,11 @@ export default {
 
 .edit-wrap {
   position: relative;
+}
+
+.edit-content {
+  position: absolute;
+  top: 45px;
+  left: 0;
 }
 </style>

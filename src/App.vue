@@ -21,6 +21,7 @@ export default {
 
 <style lang="less">
 @import "./assets/css/global.css";
+@import "./assets/css/layui-layer/layer.css";
 
 // 公共样式
 .gray {
