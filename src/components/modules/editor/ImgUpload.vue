@@ -1,10 +1,6 @@
 <template>
   <transition name="fade">
-    <div
-      class="layui-layer layui-layer-page layui-layer-border edit-content"
-      v-show="isShow"
-      ref="wrapper"
-    >
+    <div class="layui-layer layui-layer-page layui-layer-border edit-content" v-show="isShow">
       <div class="layui-layer-title">插入图片</div>
       <div class="layui-layer-content">
         <ul class="layui-form layui-form-pane">
@@ -51,53 +47,15 @@ import config from "@/config";
 
 export default {
   name: "ImgUpload",
-  props: ["isShow", "ctrl"],
+  props: ["isShow"],
   data() {
     return {
       pic: "", // 上传的图片
       formData: "" // 上传图片的数据
     };
   },
-  mounted() {
-    // nextTick: 将回调延迟到下次DOM更新循环之后执行
-    this.$nextTick(() => {
-      /**
-       * 当点击face以外的地方时，需隐藏face。利用事件冒泡的原理，
-       * 当我们vue组件下次去进行页面元素刷新的时候，去判断下
-       * 有没有点击face以外的内容。如果点击，则隐藏face
-       */
-      document
-        .querySelector("body")
-        .addEventListener("click", this.handleBodyClick);
-    });
-  },
-  beforeDestroy() {
-    // 由于组件不停的创建或销毁，会导致重复添加监听事件，故此处需移除事件
-    document
-      .querySelector("body")
-      .removeEventListener("click", this.handleBodyClick);
-  },
-  methods: {
-    handleFaceClick(item) {
-      this.$emit("addEvent", item);
-    },
-    // 触发隐藏本组件的关闭事件，改变isShow状态
-    handleBodyClick(e) {
-      // 防止事件冒泡
-      e.stopPropagation();
-      if (typeof this.ctrl === "undefined") {
-        return;
-      }
 
-      // 判断是否点击到非控制ICON以外 + 本组件 的地方
-      if (
-        !(this.ctrl.contains(e.target) || this.$refs.wrapper.contains(e.target))
-      ) {
-        this.$emit("closeEvent");
-        this.pic = "";
-        this.formData = "";
-      }
-    },
+  methods: {
     close() {
       this.$emit("closeEvent");
       // 清空输入内容，以及选择的文件
@@ -112,7 +70,6 @@ export default {
         formData.append("file", file[0]);
         this.formData = formData;
       }
-      debugger;
       // 上传图片
       uploadImg(this.formData).then(res => {
         const baseUrl =
