@@ -17,54 +17,56 @@
                 <validation-observer ref="observer" v-slot="{ validate }">
                   <div class="layui-row layui-col-space15 layui-form-item">
                     <div class="layui-col-md3">
-                      <label class="layui-form-label">所在专栏</label>
-                      <div
-                        class="layui-input-block"
-                        @click="()=>{this.isSelectCata = !this.isSelectCata}"
-                      >
-                        <div
-                          class="layui-unselect layui-form-select"
-                          :class="{'layui-form-selected': isSelectCata}"
-                        >
-                          <div class="layui-select-title">
-                            <input
-                              type="text"
-                              placeholder="请选择"
-                              readonly
-                              v-model="catalogs[cataIndex].text"
-                              class="layui-input layui-unselect"
-                            />
-                            <i class="layui-edge"></i>
+                      <validation-provider name="catalog" rules="is_not:请选择" v-slot="{ errors }">
+                        <div class="layui-row">
+                          <label class="layui-form-label">所在专栏</label>
+                          <div class="layui-input-block" @click="changeCata">
+                            <div
+                              class="layui-unselect layui-form-select"
+                              :class="{'layui-form-selected': isSelectCata}"
+                            >
+                              <div class="layui-select-title">
+                                <input
+                                  type="text"
+                                  placeholder="请选择"
+                                  readonly
+                                  v-model="catalogs[cataIndex].text"
+                                  class="layui-input layui-unselect"
+                                />
+                                <i class="layui-edge"></i>
+                              </div>
+                              <dl class="layui-anim layui-anim-upbit">
+                                <!-- 通过事件冒泡来收起下拉选中框 -->
+                                <dd
+                                  v-for="(item, index) in catalogs"
+                                  :key="'catalog' + index"
+                                  :class="{'layui-this': index === cataIndex}"
+                                  @click="chooseCatalog(item, index)"
+                                >{{item.text}}</dd>
+                              </dl>
+                            </div>
                           </div>
-                          <dl class="layui-anim layui-anim-upbit">
-                            <!-- 通过事件冒泡来收起下拉选中框 -->
-                            <dd
-                              v-for="(item, index) in catalogs"
-                              :key="'catalog' + index"
-                              :class="{'layui-this': index === cataIndex}"
-                              @click="chooseCatalog(item, index)"
-                            >{{item.text}}</dd>
-                          </dl>
                         </div>
-                      </div>
+                        <div class="layui-row">
+                          <span style="color: #c00;">{{ errors[0] }}</span>
+                        </div>
+                      </validation-provider>
                     </div>
                     <div class="layui-col-md9">
-                      <label for="L_title" class="layui-form-label">标题</label>
-                      <div class="layui-input-block">
-                        <input
-                          type="text"
-                          id="L_title"
-                          name="title"
-                          required
-                          lay-verify="required"
-                          autocomplete="off"
-                          class="layui-input"
-                        />
-                        <!-- <input type="hidden" name="id" value="{{d.edit.id}}"> -->
-                      </div>
+                      <validation-provider name="title" rules="required" v-slot="{ errors }">
+                        <div class="layui-row">
+                          <label for="L_title" class="layui-form-label">标题</label>
+                          <div class="layui-input-block">
+                            <input type="text" class="layui-input" v-model="title" />
+                          </div>
+                        </div>
+                        <div class="lay-row">
+                          <span style="color: #c00;">{{ errors[0] }}</span>
+                        </div>
+                      </validation-provider>
                     </div>
                   </div>
-                  <editor></editor>
+                  <editor @changeContent="add"></editor>
                   <div class="layui-form-item">
                     <div class="layui-inline">
                       <label class="layui-form-label">悬赏飞吻</label>
@@ -72,7 +74,7 @@
                         <div
                           class="layui-unselect layui-form-select"
                           :class="{'layui-form-selected': isSelectFav}"
-                          @click="()=>{this.isSelectFav = !this.isSelectFav}"
+                          @click="changeFav"
                         >
                           <div class="layui-select-title">
                             <input
@@ -89,7 +91,7 @@
                             <dd
                               v-for="(item, index) in favList"
                               :key="'catalog' + index"
-                              :class="{'layui-this': index === Index}"
+                              :class="{'layui-this': index === favIndex}"
                               @click="chooseFav(item, index)"
                             >{{item}}</dd>
                           </dl>
@@ -117,7 +119,7 @@
                   </div>
 
                   <div class="layui-form-item">
-                    <button class="layui-btn" lay-filter="*" lay-submit @click="validate()">立即发布</button>
+                    <button type="button" class="layui-btn" @click="validate().then(submit)">立即发布</button>
                   </div>
                 </validation-observer>
               </form>
@@ -130,7 +132,8 @@
 </template>
 
 <script>
-import Editor from "../modules/editor/Index.vue";
+import { addPost } from "@/services/content";
+import Editor from "@/components/modules/editor/Index.vue";
 import captchaMix from "@/mixin/captcha";
 
 export default {
@@ -167,7 +170,9 @@ export default {
           value: "advise"
         }
       ],
-      favList: [20, 30, 50, 60, 80]
+      favList: [20, 30, 50, 60, 80],
+      title: "",
+      content: ""
     };
   },
 
@@ -177,6 +182,39 @@ export default {
     },
     chooseFav(item, index) {
       this.favIndex = index;
+    },
+    changeCata() {
+      this.isSelectCata = !this.isSelectCata;
+    },
+    changeFav() {
+      this.isSelectFav = !this.isSelectFav;
+    },
+    add(val) {
+      this.content = val;
+    },
+    async submit() {
+      const isValid = await this.$refs.observer.validate();
+
+      if (!isValid) {
+        return;
+      }
+
+      if (this.content.trim() === "") {
+        this.$alert("文章内容不得未空!");
+        return;
+      }
+
+      // 添加新的帖子
+      addPost({
+        title: this.title,
+        catalog: this.catalogs[this.cataIndex].value,
+        content: this.content,
+        fav: this.favList[this.favIndex],
+        code: this.code,
+        sid: this.$store.state.sid
+      }).then(res => {
+        console.log("res:", res);
+      });
     }
   }
 };

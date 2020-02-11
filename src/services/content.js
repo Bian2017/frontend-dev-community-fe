@@ -27,4 +27,7 @@ const getLinks = () => {
 // 图片上传接口
 const uploadImg = formData => request.post("/content/upload", formData);
 
-export { getList, getTop, getTips, getLinks, uploadImg };
+// 发帖接口
+const addPost = data => request.post("/content/add", { ...data });
+
+export { getList, getTop, getTips, getLinks, uploadImg, addPost };

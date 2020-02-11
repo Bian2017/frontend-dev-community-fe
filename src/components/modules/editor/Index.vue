@@ -44,6 +44,7 @@
         @closeEvent="closeModal()"
         @addEvent="addCode"
       ></code-input>
+      <preview :isShow="current === 6" @closeEvent="closeModal()" :content="content"></preview>
     </div>
   </div>
 </template>
@@ -54,6 +55,7 @@ import ImgUpload from "./ImgUpload.vue";
 import LinkAdd from "./LinkAdd.vue";
 import Quote from "./Quote.vue";
 import CodeInput from "./Code.vue";
+import Preview from "./Preview.vue";
 
 export default {
   name: "Editor",
@@ -62,7 +64,8 @@ export default {
     ImgUpload,
     LinkAdd,
     Quote,
-    CodeInput
+    CodeInput,
+    Preview
   },
   data() {
     return {
@@ -101,6 +104,9 @@ export default {
       .querySelector("body")
       .removeEventListener("click", this.handleBodyClick);
   },
+  updated() {
+    this.$emit("changeContent", this.content);
+  },
   methods: {
     closeModal() {
       this.current = "";
@@ -116,12 +122,16 @@ export default {
       let cursorPos = 0;
       const elem = document.getElementById("edit");
 
+      // IE: Selection对象表示用户选择的文本范围或插入符号的当前位置
       if (document.selection) {
-        // IE
+        // 创建文本区域对象(即获取光标位置)
         const selectRange = document.selection.createRange();
+        // 选定区起始点向后移动xx个字符
         selectRange.moveStart("character", -elem.value.length);
+        // 获取整个文本长度
         cursorPos = selectRange.text.length;
       } else if (elem.selectionStart || elem.selectionStart === "0") {
+        // selectionStart: 被选中的第一个字符的位置
         cursorPos = elem.selectionStart;
       }
       this.pos = cursorPos;
@@ -147,7 +157,7 @@ export default {
     },
     // 添加链接
     addLink(item) {
-      const insertContent = ` a(${item})`;
+      const insertContent = ` a(${item})[${item}]`;
       this.insert(insertContent);
       this.pos += insertContent.length; // 光标的下一个位置
     },
@@ -172,8 +182,10 @@ export default {
       if (typeof this.content === "undefined") {
         return;
       }
+
+      // 把空字符串作为分隔符，则每个字符之间都会被分割
       const tmp = this.content.split("");
-      // 在要插入的位置插入对应的内容
+      // 在要插入的位置插入对应的内容(0表示不会删除项目)
       tmp.splice(this.pos, 0, val);
       this.content = tmp.join("");
     },
