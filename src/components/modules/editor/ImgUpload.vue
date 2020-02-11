@@ -88,7 +88,7 @@ export default {
         this.$pop("shake", "请上传图片或者复制图片链接");
         return;
       }
-      this.$emit("addEvent", this.name);
+      this.$emit("addEvent", this.pic);
 
       // 清空数据，恢复初始状态
       setTimeout(() => {

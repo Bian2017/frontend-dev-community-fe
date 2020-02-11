@@ -37,7 +37,7 @@ export default {
         return;
       }
 
-      this.$emit("addEvent");
+      this.$emit("addEvent", this.link);
       setTimeout(() => {
         this.cancel();
       }, 0); // 将状态置为初始状态
