@@ -99,7 +99,10 @@ const routes = [
   {
     path: "/add",
     name: "add",
-    component: Add
+    component: Add,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/user/:uid",

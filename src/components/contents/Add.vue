@@ -66,7 +66,7 @@
                       </validation-provider>
                     </div>
                   </div>
-                  <editor @changeContent="add"></editor>
+                  <editor @changeContent="add" :initContent="content"></editor>
                   <div class="layui-form-item">
                     <div class="layui-inline">
                       <label class="layui-form-label">悬赏飞吻</label>
@@ -175,6 +175,26 @@ export default {
       content: ""
     };
   },
+  mounted() {
+    const saveData = localStorage.getItem("addData");
+
+    if (saveData && saveData !== "") {
+      this.$confirm(
+        "是否加载未编辑完的内容?",
+        () => {
+          const obj = JSON.parse(saveData);
+
+          this.content = obj.content;
+          this.title = obj.title;
+          this.cataIndex = obj.cataIndex;
+          this.favIndex = obj.favIndex;
+        },
+        () => {
+          localStorage.setItem("addData", "");
+        }
+      );
+    }
+  },
 
   methods: {
     chooseCatalog(item, index) {
@@ -191,6 +211,17 @@ export default {
     },
     add(val) {
       this.content = val;
+
+      const saveData = {
+        title: this.title,
+        cataIndex: this.cataIndex,
+        content: this.content,
+        favIndex: this.favIndex
+      };
+
+      if (this.title.trim() !== "" && this.content.trim() !== "") {
+        localStorage.setItem("addData", JSON.stringify(saveData));
+      }
     },
     async submit() {
       const isValid = await this.$refs.observer.validate();

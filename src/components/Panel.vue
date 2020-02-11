@@ -26,7 +26,7 @@
           <!-- 用户登入后显示 -->
           <template v-if="isLogin">
             <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block">
-              <a href="user/index.html">我发表的贴</a>
+              <a>我发表的贴</a>
             </li>
             <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block">
               <a href="user/index.html#collection">我收藏的贴</a>
@@ -38,7 +38,7 @@
           <span class="fly-search">
             <i class="layui-icon"></i>
           </span>
-          <a href="jie/add.html" class="layui-btn">发表新帖</a>
+          <router-link :to="{'name': 'add'}" class="layui-btn">发表新帖</router-link>
         </div>
         <div
           class="layui-hide-sm layui-show-xs-block"

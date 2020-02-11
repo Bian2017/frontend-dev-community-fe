@@ -59,6 +59,7 @@ import Preview from "./Preview.vue";
 
 export default {
   name: "Editor",
+  props: ["initContent"],
   components: {
     Face,
     ImgUpload,
@@ -75,6 +76,15 @@ export default {
       content: "", // 文本内容
       pos: "" // 光标位置
     };
+  },
+  watch: {
+    /**
+     * 初始化发帖组件的时候，会初始化富文本组件。当发帖组件弹出模态框时，用户尚未点击确认按钮，
+     * 此时initContent的内容为空。故不能使用mounted方法，得使用watch方法
+     */
+    initContent(newval) {
+      this.content = newval;
+    }
   },
   mounted() {
     // nextTick: 将回调延迟到下次DOM更新循环之后执行
