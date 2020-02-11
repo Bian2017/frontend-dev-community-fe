@@ -3,31 +3,38 @@
     <div class="layui-form-item layui-form-text">
       <div class="layui-input-block">
         <div class="layui-unselect fly-edit" ref="icons">
-          <span @click="()=> {this.faceStatus = !this.faceStatus}">
+          <span @click="choose(0)">
             <i class="iconfont icon-yxj-expression"></i>
           </span>
-          <span @click="()=> {this.imgStatus = !this.imgStatus}">
+          <span @click="choose(1)">
             <i class="iconfont icon-tupian"></i>
           </span>
-          <span @click="()=> {this.linkStatus = !this.linkStatus}">
+          <span @click="choose(2)">
             <i class="iconfont icon-lianjie"></i>
           </span>
-          <span class="quote">”</span>
-          <span>
+          <span class="quote" @click="choose(3)">”</span>
+          <span @click="choose(4)">
             <i class="iconfont icon-emwdaima"></i>
           </span>
-          <span>hr</span>
-          <span>
+          <span @click="choose(5)">hr</span>
+          <span @click="choose(6)">
             <i class="iconfont icon-yulan1"></i>
           </span>
         </div>
-        <textarea name="content" class="layui-textarea fly-editor"></textarea>
+        <textarea name="content" class="layui-textarea fly-editor" ref="textEdit"></textarea>
       </div>
     </div>
     <div ref="modal">
-      <face :isShow="faceStatus" @closeEvent="()=>{this.faceStatus = false}"></face>
-      <img-upload :isShow="imgStatus" @closeEvent="()=>{this.imgStatus = false}"></img-upload>
-      <link-add :isShow="linkStatus" @closeEvent="()=>{this.linkStatus = false}"></link-add>
+      <face :isShow="current === 0" @closeEvent="closeModal()"></face>
+      <img-upload :isShow="current === 1" @closeEvent="closeModal()"></img-upload>
+      <link-add :isShow="current === 2" @closeEvent="closeModal()"></link-add>
+      <quote :isShow="current === 3" @closeEvent="closeModal()"></quote>
+      <code-input
+        :isShow="current === 4"
+        :width="codeWidth"
+        :height="codeHeight"
+        @closeEvent="closeModal()"
+      ></code-input>
     </div>
   </div>
 </template>
@@ -36,19 +43,23 @@
 import Face from "./Face.vue";
 import ImgUpload from "./ImgUpload.vue";
 import LinkAdd from "./LinkAdd.vue";
+import Quote from "./Quote.vue";
+import CodeInput from "./Code.vue";
 
 export default {
   name: "Editor",
   components: {
     Face,
     ImgUpload,
-    LinkAdd
+    LinkAdd,
+    Quote,
+    CodeInput
   },
   data() {
     return {
-      faceStatus: false,
-      imgStatus: false,
-      linkStatus: false
+      current: "",
+      codeWidth: 400,
+      codeHeight: 200
     };
   },
   mounted() {
@@ -62,6 +73,15 @@ export default {
       document
         .querySelector("body")
         .addEventListener("click", this.handleBodyClick);
+
+      // 通过取textEdit的大小来动态调整代码输入框的宽高
+      this.codeWidth = this.$refs.textEdit.offsetWidth - 60;
+      this.codeHeight = this.$refs.textEdit.offsetHeight - 80;
+
+      window.addEventListener("resize", () => {
+        this.codeWidth = this.$refs.textEdit.offsetWidth - 60;
+        this.codeHeight = this.$refs.textEdit.offsetHeight - 80;
+      });
     });
   },
   beforeDestroy() {
@@ -71,6 +91,16 @@ export default {
       .removeEventListener("click", this.handleBodyClick);
   },
   methods: {
+    closeModal() {
+      this.current = "";
+    },
+    choose(index) {
+      if (index === this.current) {
+        this.closeModal();
+      } else {
+        this.current = index;
+      }
+    },
     // 触发隐藏本组件的关闭事件，改变isShow状态
     handleBodyClick(e) {
       // 防止事件冒泡
@@ -83,9 +113,7 @@ export default {
           this.$refs.modal.contains(e.target)
         )
       ) {
-        this.faceStatus = false;
-        this.imgStatus = false;
-        this.linkStatus = false;
+        this.closeModal();
       }
     }
   }
