@@ -274,5 +274,10 @@ export default {
   top: 45px;
   left: 0;
   z-index: 10;
+  background: #fff;
+}
+
+.layui-layer-prompt {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 </style>

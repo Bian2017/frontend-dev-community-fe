@@ -1,7 +1,7 @@
 <template>
   <!-- 利用vue提供的transition组件，给当前组件添加进入/离开过渡 -->
   <transition name="fade">
-    <div class="layui-layer layui-layer-tips layui-edit-face edit-content" v-show="isShow">
+    <div class="layui-layer-tips layui-edit-face edit-content" v-show="isShow">
       <div class="layui-layer-content">
         <ul class="layui-clear">
           <!-- v-for可以遍历对象 -->

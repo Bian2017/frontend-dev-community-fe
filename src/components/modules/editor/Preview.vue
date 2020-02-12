@@ -1,10 +1,6 @@
 <template>
   <transition name="fade">
-    <div
-      id="preview"
-      class="layui-layer layui-layer-page layui-layer-prompt edit-content"
-      v-show="isShow"
-    >
+    <div id="preview" class="layui-layer-page layui-layer-prompt edit-content" v-show="isShow">
       <div class="layui-layer-title">预览</div>
       <div class="layui-layer-content">
         <div class="detail-body" v-html="replaceContent"></div>

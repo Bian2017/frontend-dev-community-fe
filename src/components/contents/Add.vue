@@ -243,9 +243,18 @@ export default {
         fav: this.favList[this.favIndex],
         code: this.code,
         sid: this.$store.state.sid
-      }).then(res => {
-        console.log("res:", res);
-      });
+      })
+        .then(() => {
+          localStorage.setItem("addData", ""); // 清空已经发布的内容
+          this.$alert("发帖成功~~2s后跳转");
+
+          setTimeout(() => {
+            this.$router.push({ name: "index" });
+          }, 2000);
+        })
+        .catch(err => {
+          this.$alert(err.msg);
+        });
     }
   }
 };

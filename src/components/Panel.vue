@@ -44,7 +44,7 @@
           class="layui-hide-sm layui-show-xs-block"
           style="margin-top: -10px; padding-bottom: 10px; text-align: center;"
         >
-          <a href="jie/add.html" class="layui-btn">发表新帖</a>
+          <router-link :to="{'name': 'add'}" class="layui-btn">发表新帖</router-link>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div class="layui-layer layui-layer-page layui-layer-prompt edit-content" v-show="isShow">
+    <div class="layui-layer-page layui-layer-prompt edit-content" v-show="isShow">
       <div class="layui-layer-title">请输入合法链接</div>
       <div class="layui-layer-content">
         <input type="text" class="layui-layer-input" id="linkInput" v-model="link" />
