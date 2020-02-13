@@ -154,7 +154,14 @@
             <!-- 无数据时 -->
             <!-- <li class="fly-none">消灭零回复</li> -->
           </ul>
-
+          <pagination
+            :showType="'icon'"
+            :hasSelect="true"
+            :total="total"
+            :size="size"
+            :current="current"
+            @changeCurrent="handleChange"
+          ></pagination>
           <div class="layui-form layui-form-pane">
             <form>
               <editor></editor>
@@ -200,6 +207,7 @@ import Links from "@/components/sidebar/Links.vue";
 import Panel from "@/components/Panel.vue";
 import Editor from "@/components/modules/editor/Index.vue";
 import captchaMix from "@/mixin/captcha";
+import Pagination from "@/components/modules/page/Index.vue";
 
 export default {
   name: "detail",
@@ -209,7 +217,20 @@ export default {
     HotList,
     Ads,
     Links,
-    Editor
+    Editor,
+    Pagination
+  },
+  data() {
+    return {
+      total: 101,
+      size: 15,
+      current: 0
+    };
+  },
+  methods: {
+    handleChange(val) {
+      this.current = val;
+    }
   }
 };
 </script>

@@ -83,4 +83,22 @@ export default {
 .text-right {
   text-align: right;
 }
+
+.d-flex {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+
+  &.flex-start {
+    justify-content: flex-start;
+  }
+
+  &.flex-end {
+    justify-content: flex-end;
+  }
+
+  &.flex-center {
+    justify-content: center;
+  }
+}
 </style>
