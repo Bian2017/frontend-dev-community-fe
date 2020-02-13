@@ -18,7 +18,7 @@
               v-if="item.uid.isVip !== '0'"
             >{{ "VIP" + item.uid.isVip }}</i>
           </a>
-          <span>{{ item.created | moment }}</span>
+          <span>{{ item.created | formatDate }}</span>
 
           <span class="fly-list-kiss layui-hide-xs" title="悬赏飞吻">
             <i class="iconfont icon-kiss"></i>
@@ -51,8 +51,6 @@
 
 <script>
 import _ from "loadsh";
-import moment from "moment";
-import "moment/locale/zh-cn";
 
 export default {
   name: "listItem",
@@ -103,18 +101,6 @@ export default {
   methods: {
     more() {
       this.$emit("nextpage");
-    }
-  },
-  // 过滤器
-  filters: {
-    moment(date) {
-      // 超过7天，显示日期
-      if (moment(date).isBefore(moment().subtract(7, "days"))) {
-        return moment(date).format("YYYY-MM-DD");
-      }
-
-      // 否则显示1小时前，xx小时前，X天前
-      return moment(date).from(moment());
     }
   }
 };

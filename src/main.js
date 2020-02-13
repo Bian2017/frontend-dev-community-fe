@@ -2,6 +2,8 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
+
+import filters from "@/utils/filter";
 import "@/utils/veevalidate";
 import Alert from "./components/modules/alert";
 import Pop from "./components/modules/pop";
@@ -11,6 +13,12 @@ import Pop from "./components/modules/pop";
  */
 Vue.use(Alert);
 Vue.use(Pop);
+
+// 当有多个filters时，通过这种方式避免全局一一注册
+Object.keys(filters).forEach(key => {
+  // 通过这种方式可以全局使用filter
+  Vue.filter(key, filters[key]);
+});
 
 Vue.config.productionTip = false;
 

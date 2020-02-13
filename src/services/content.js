@@ -30,4 +30,7 @@ const uploadImg = formData => request.post("/content/upload", formData);
 // 发帖接口
 const addPost = data => request.post("/content/add", { ...data });
 
-export { getList, getTop, getTips, getLinks, uploadImg, addPost };
+// 获取文章详情
+const getDetail = tid => request.get(`/public/content/detail?tid=${tid}`);
+
+export { getList, getTop, getTips, getLinks, uploadImg, addPost, getDetail };

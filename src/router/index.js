@@ -106,8 +106,9 @@ const routes = [
     }
   },
   {
-    path: "/detail",
+    path: "/detail/:tid",
     name: "detail",
+    props: true, // props被设置为true，route.params将会被设置为组件属性
     component: Detail
   },
   {
