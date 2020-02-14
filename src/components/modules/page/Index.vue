@@ -151,6 +151,13 @@ export default {
       limit: 10 // 每页显示的size
     };
   },
+  watch: {
+    // eslint-disable-next-line no-unused-vars
+    total(newval, oldval) {
+      // 当total发生变化时，重新初始化分页码
+      this.initPages();
+    }
+  },
   mounted() {
     // 设置select的内容
     this.limit = this.size;
