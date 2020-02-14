@@ -93,7 +93,7 @@
           </fieldset>
 
           <ul class="jieda" id="jieda">
-            <li class="jieda-daan" v-for="(item, index) in comments" :key="'comments'+ index">
+            <li class="jieda-daan" v-for="(item, index) in comments" :key="item._id">
               <div class="detail-about detail-about-reply">
                 <a class="fly-avatar" href>
                   <img :src="item.cuid? item.cuid.pic: '/img/avatar.jpg'" alt=" " />
@@ -121,7 +121,7 @@
 
                 <!-- <i class="iconfont icon-caina" title="最佳答案"></i> -->
               </div>
-              <div class="detail-body jieda-body photos" v-html="item.content"></div>
+              <div class="detail-body jieda-body photos" v-richtext="item.content"></div>
               <div class="jieda-reply">
                 <span class="jieda-zan" :class="{'zanok': item.handed === '1'}" type="zan">
                   <i class="iconfont icon-zan"></i>
@@ -149,11 +149,12 @@
             :size="size"
             :current="current"
             @changeCurrent="handleChange"
+            @changeLimit="handleLimit"
           ></pagination>
           <div class="layui-form layui-form-pane">
             <form>
               <validation-observer ref="observer" v-slot="{validate}">
-                <editor @changeContent="addContent"></editor>
+                <editor @changeContent="addContent" :initContent="editInfo.content"></editor>
                 <div class="layui-form-item">
                   <label for="code" class="layui-form-label">验证码</label>
                   <validation-provider name="code" rules="required|length:4" v-slot="{ errors }">
@@ -249,6 +250,11 @@ export default {
   methods: {
     handleChange(val) {
       this.current = val;
+      this.getCommentsList();
+    },
+    handleLimit(val) {
+      this.size = val;
+      this.getCommentsList();
     },
     getPostDetail() {
       getDetail(this.tid).then(res => {
@@ -257,7 +263,11 @@ export default {
       });
     },
     getCommentsList() {
-      getComments(this.tid).then(res => {
+      getComments({
+        tid: this.tid,
+        page: this.current,
+        limit: this.size
+      }).then(res => {
         this.comments = res.data;
         this.total = res.total;
       });
@@ -282,9 +292,42 @@ export default {
       this.editInfo.sid = this.$store.state.sid;
       this.editInfo.tid = this.tid;
 
-      addComment(this.editInfo).then(() => {
-        this.$pop("", "发表评论成功");
-      });
+      addComment(this.editInfo)
+        .then(res => {
+          this.$pop("", "发表评论成功");
+
+          // 添加新的评论到评论列表
+          const user = this.$store.state.userInfo;
+          const cuid = {
+            // eslint-disable-next-line no-underscore-dangle
+            _id: user._id,
+            pic: user.pic,
+            name: user.name,
+            isVip: user.isVip
+          };
+          res.data.cuid = cuid;
+          this.comments.push(res.data);
+
+          // 发表评论成功后，清空回复
+          this.code = "";
+          this.editInfo.content = "";
+
+          // 清空observer
+          requestAnimationFrame(() => {
+            if (this.$refs.observer) {
+              this.$refs.observer.reset();
+            }
+          });
+
+          // 刷新图形验证码
+          this.getCaptcha();
+        })
+        .catch(err => {
+          console.log("err:", err);
+          if (err.data && err.data.code === 500) {
+            this.$alert(err.data.msg);
+          }
+        });
     }
   }
 };

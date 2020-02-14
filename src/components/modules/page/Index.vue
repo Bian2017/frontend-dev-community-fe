@@ -183,6 +183,7 @@ export default {
           "changeCurrent",
           Math.floor((this.limit * this.current) / this.options[index])
         );
+        this.$emit("changeLimit", this.options[index]);
       }
       this.optIndex = index;
       this.limit = this.options[this.optIndex];
@@ -216,7 +217,9 @@ export default {
       this.$emit("changeCurrent", current);
     },
     changeIndex(val) {
-      this.$emit("changeCurrent", val - 1);
+      if (val - 1 !== this.current) {
+        this.$emit("changeCurrent", val - 1);
+      }
     }
   }
 };

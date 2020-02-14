@@ -4,6 +4,7 @@ import router from "./router";
 import store from "./store";
 
 import filters from "@/utils/filter";
+import directives from "@/utils/directives";
 import "@/utils/veevalidate";
 import Alert from "./components/modules/alert";
 import Pop from "./components/modules/pop";
@@ -18,6 +19,12 @@ Vue.use(Pop);
 Object.keys(filters).forEach(key => {
   // 通过这种方式可以全局使用filter
   Vue.filter(key, filters[key]);
+});
+
+// 当有多个自定义指令时，通过这种方式避免全局一一注册
+Object.keys(directives).forEach(key => {
+  // 通过这种方式可以全局使用自定义指令
+  Vue.directive(key, directives[key]);
 });
 
 Vue.config.productionTip = false;
