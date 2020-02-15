@@ -4,7 +4,13 @@ import request from "@/utils/request";
 // 获取文章中的评论列表
 const getComments = params => request.get(`/public/comments?${qs.stringify(params)}`);
 
-// 获取文章中的评论列表
+// 添加评论
 const addComment = data => request.post(`/comments/reply`, data);
 
-export { getComments, addComment };
+// 更新评论
+const updateComment = data => request.post(`/comments/update`, data);
+
+// 最佳答案采纳
+const setCommentBest = params => request.get(`/comments/accept?${qs.stringify(params)}`);
+
+export { getComments, addComment, updateComment, setCommentBest };

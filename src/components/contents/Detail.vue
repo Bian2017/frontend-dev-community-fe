@@ -119,7 +119,7 @@
                   <span>{{item.created | formatDate}}</span>
                 </div>
 
-                <!-- <i class="iconfont icon-caina" title="最佳答案"></i> -->
+                <i class="iconfont icon-caina" title="最佳答案" v-show="item.isBest === '1'"></i>
               </div>
               <div class="detail-body jieda-body photos" v-richtext="item.content"></div>
               <div class="jieda-reply">
@@ -132,9 +132,18 @@
                   回复
                 </span>
                 <div class="jieda-admin">
-                  <span type="edit">编辑</span>
-                  <span type="del">删除</span>
-                  <!-- <span class="jieda-accept" type="accept">采纳</span> -->
+                  <!-- 判断当前帖子是否结贴，并判断是否是用户本人，以及用户是否处于封禁状态 -->
+                  <span
+                    type="edit"
+                    @click="editComment(item)"
+                    v-show="page.isEnd === '0' && item.cuid._id === user._id && user.status === '0'"
+                  >编辑</span>
+                  <!-- <span type="del">删除</span> -->
+                  <span
+                    class="jieda-accept"
+                    @click="setBest(item, index)"
+                    v-show="page.isEnd === '0' && item.cuid._id === user._id && user.status === '0'"
+                  >采纳</span>
                 </div>
               </div>
             </li>
@@ -200,8 +209,14 @@ import Editor from "@/components/modules/editor/Index.vue";
 import captchaMix from "@/mixin/captcha";
 import Pagination from "@/components/modules/page/Index.vue";
 import { getDetail } from "@/services/content";
-import { getComments, addComment } from "@/services/comment";
+import {
+  getComments,
+  addComment,
+  updateComment,
+  setCommentBest
+} from "@/services/comment";
 import { escapeHtml } from "@/utils/escapeHtml";
+import { scrollToElem } from "@/utils/common";
 
 export default {
   name: "detail",
@@ -241,9 +256,13 @@ export default {
       }
 
       return escapeHtml(this.page.content);
+    },
+    user() {
+      return this.$store.state.userInfo;
     }
   },
   mounted() {
+    // window.vue = scrollToElem; // 通过这种方式可以直接调试scrollToElem方法，即window.vue('.layui-input-block',1000,-65)
     this.getPostDetail();
     this.getCommentsList();
   },
@@ -288,16 +307,55 @@ export default {
         return;
       }
 
+      // 用户禁言状态判断
+      const user = this.$store.state.userInfo;
+      if (user.status !== "0") {
+        this.$pop("shake", "用户已经禁言，请联系管理员");
+        return;
+      }
+
       this.editInfo.code = this.code;
       this.editInfo.sid = this.$store.state.sid;
       this.editInfo.tid = this.tid;
+
+      // 判断评论id是否存在
+      if (
+        typeof this.editInfo.cid !== "undefined" &&
+        this.editInfo.cid !== ""
+      ) {
+        // 判断用户是否修改了内容
+        if (this.editInfo.content === this.editInfo.item.content) {
+          return;
+        }
+
+        // 删除无用字段
+        const post = { ...this.editInfo };
+        delete post.item;
+
+        // 更新评论
+        updateComment(post).then(() => {
+          const tmp = this.editInfo.item;
+          tmp.content = this.editInfo.content;
+          this.$pop("", "更新评论成功");
+
+          this.code = "";
+          this.editInfo.content = "";
+
+          // 更新整个数组中的一条
+          this.comments.splice(
+            this.comments.indexOf(this.editInfo.item),
+            1,
+            tmp
+          );
+        });
+        return;
+      }
 
       addComment(this.editInfo)
         .then(res => {
           this.$pop("", "发表评论成功");
 
-          // 添加新的评论到评论列表
-          const user = this.$store.state.userInfo;
+          // 获取评论用户的信息：图片、昵称、vip
           const cuid = {
             // eslint-disable-next-line no-underscore-dangle
             _id: user._id,
@@ -305,6 +363,7 @@ export default {
             name: user.name,
             isVip: user.isVip
           };
+
           res.data.cuid = cuid;
           this.comments.push(res.data);
 
@@ -328,6 +387,36 @@ export default {
             this.$alert(err.data.msg);
           }
         });
+    },
+    editComment(item) {
+      this.editInfo.content = item.content;
+
+      // 滚动条滚动至输入框位置，并且进行focus
+      scrollToElem(".layui-input-block", 500, -65); // -65是顶部导航栏的位置
+      document.getElementById("edit").focus();
+
+      // eslint-disable-next-line no-underscore-dangle
+      this.editInfo.cid = item._id; // 确定需要去编辑的记录
+      this.editInfo.item = item;
+    },
+    // eslint-disable-next-line no-unused-vars
+    setBest(item) {
+      this.$confirm(
+        "确定采纳为最佳答案吗？",
+        () => {
+          setCommentBest({
+            // eslint-disable-next-line no-underscore-dangle
+            cid: item._id, // 评论ID
+            tid: this.tid // 帖子ID
+          }).then(() => {
+            this.$pop("", "设置最佳答案成功！");
+
+            item.isBest = "1";
+            this.page.isEnd = "1";
+          });
+        },
+        () => {}
+      );
     }
   }
 };
