@@ -131,7 +131,7 @@
                   <i class="iconfont icon-zan"></i>
                   <em>{{item.hands}}</em>
                 </span>
-                <span type="reply">
+                <span type="reply" @click="reply(item)">
                   <i class="iconfont icon-svgmoban53"></i>
                   回复
                 </span>
@@ -436,6 +436,29 @@ export default {
             this.$pop("shake", err.data.msg);
           }
         });
+    },
+    // 回复
+    reply(item) {
+      if (this.editInfo.content) {
+        const reg = /^@[\S]+/g;
+
+        // 如果已回复某用户，则对原有用户替换成新用户
+        if (reg.test(this.editInfo.content)) {
+          this.editInfo.content = this.editInfo.content.replace(
+            reg,
+            `@${item.cuid.name} `
+          );
+        } else {
+          this.editInfo.content = `@${item.cuid.name} ${this.editInfo.content}`;
+        }
+      } else {
+        // 评论框为空
+        this.editInfo.content = `@${item.cuid.name} `;
+      }
+
+      // 滚动条滚动至输入框位置，并且进行focus
+      scrollToElem(".layui-input-block", 500, -65); // -65是顶部导航栏的位置
+      document.getElementById("edit").focus();
     }
   }
 };

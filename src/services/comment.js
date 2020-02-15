@@ -3,12 +3,19 @@ import request from "@/utils/request";
 import store from "@/store";
 
 // 获取文章中的评论列表
-const getComments = params =>
-  request.get(`/public/comments?${qs.stringify(params)}`, {
-    headers: {
-      Authorization: `Bearer ${store.state.token}`
-    }
-  });
+const getComments = params => {
+  const { token } = store.state;
+  let headers = {};
+  if (token !== "") {
+    headers = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+  }
+
+  return request.get(`/public/comments?${qs.stringify(params)}`, headers);
+};
 
 // 添加评论
 const addComment = data => request.post(`/comments/reply`, data);
