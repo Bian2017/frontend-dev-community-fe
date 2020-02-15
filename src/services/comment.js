@@ -1,8 +1,14 @@
 import qs from "qs";
 import request from "@/utils/request";
+import store from "@/store";
 
 // 获取文章中的评论列表
-const getComments = params => request.get(`/public/comments?${qs.stringify(params)}`);
+const getComments = params =>
+  request.get(`/public/comments?${qs.stringify(params)}`, {
+    headers: {
+      Authorization: `Bearer ${store.state.token}`
+    }
+  });
 
 // 添加评论
 const addComment = data => request.post(`/comments/reply`, data);
@@ -13,4 +19,7 @@ const updateComment = data => request.post(`/comments/update`, data);
 // 最佳答案采纳
 const setCommentBest = params => request.get(`/comments/accept?${qs.stringify(params)}`);
 
-export { getComments, addComment, updateComment, setCommentBest };
+// 设置点赞
+const setHands = params => request.get(`/comments/hands?${qs.stringify(params)}`);
+
+export { getComments, addComment, updateComment, setCommentBest, setHands };

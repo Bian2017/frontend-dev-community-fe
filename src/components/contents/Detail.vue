@@ -123,7 +123,11 @@
               </div>
               <div class="detail-body jieda-body photos" v-richtext="item.content"></div>
               <div class="jieda-reply">
-                <span class="jieda-zan" :class="{'zanok': item.handed === '1'}" type="zan">
+                <span
+                  class="jieda-zan"
+                  :class="{'zanok': item.handed === '1'}"
+                  @click="hands(item)"
+                >
                   <i class="iconfont icon-zan"></i>
                   <em>{{item.hands}}</em>
                 </span>
@@ -213,7 +217,8 @@ import {
   getComments,
   addComment,
   updateComment,
-  setCommentBest
+  setCommentBest,
+  setHands
 } from "@/services/comment";
 import { escapeHtml } from "@/utils/escapeHtml";
 import { scrollToElem } from "@/utils/common";
@@ -399,7 +404,6 @@ export default {
       this.editInfo.cid = item._id; // 确定需要去编辑的记录
       this.editInfo.item = item;
     },
-    // eslint-disable-next-line no-unused-vars
     setBest(item) {
       this.$confirm(
         "确定采纳为最佳答案吗？",
@@ -417,6 +421,21 @@ export default {
         },
         () => {}
       );
+    },
+    hands(item) {
+      // eslint-disable-next-line no-underscore-dangle
+      setHands({ cid: item._id })
+        .then(() => {
+          this.$pop("", "点赞成功");
+
+          item.handed = "1";
+          item.hands += 1;
+        })
+        .catch(err => {
+          if (err.data.code === 500) {
+            this.$pop("shake", err.data.msg);
+          }
+        });
     }
   }
 };
