@@ -11,3 +11,9 @@ export const updateUserInfo = data => request.post("/user/basic", data);
 
 // 确认修改用户名(邮箱)
 export const updateUsername = data => request.get(`/public/reset-email?${qs.stringify(data)}`);
+
+// 设置收藏 & 取消收藏
+export const addCollect = data => request.get(`/user/set-collect?${qs.stringify(data)}`);
+
+// 获取收藏列表
+export const getCollect = data => request.get(`/user/collect?${qs.stringify(data)}`);

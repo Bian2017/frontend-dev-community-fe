@@ -1,5 +1,6 @@
 import qs from "qs";
 import request from "@/utils/request";
+import store from "@/store";
 
 /**
  * 读取文章列表
@@ -31,7 +32,19 @@ const uploadImg = formData => request.post("/content/upload", formData);
 const addPost = data => request.post("/content/add", { ...data });
 
 // 获取文章详情
-const getDetail = tid => request.get(`/public/content/detail?tid=${tid}`);
+const getDetail = tid => {
+  const { token } = store.state;
+  let headers = {};
+  if (token !== "") {
+    headers = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+  }
+
+  return request.get(`/public/content/detail?tid=${tid}`, headers);
+};
 
 // 更新帖子
 const updatePost = data => request.post(`/content/update`, data);

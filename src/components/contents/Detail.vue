@@ -92,7 +92,12 @@
                 }
               }"
             >编辑</router-link>
-            <a href class="layui-btn layui-btn-sm jie-admin jie-admin-collect">收藏</a>
+            <a
+              href
+              class="layui-btn layui-btn-sm jie-admin jie-admin-collect"
+              :class="{'layui-btn-primary': page.isFav}"
+              @click.prevent="setCollect()"
+            >{{page.isFav? '取消收藏': '收藏'}}</a>
           </div>
           <div class="detail-body photos" v-html="content"></div>
         </div>
@@ -233,6 +238,8 @@ import {
   setCommentBest,
   setHands
 } from "@/services/comment";
+
+import { addCollect } from "@/services/user";
 import { escapeHtml } from "@/utils/escapeHtml";
 import { scrollToElem } from "@/utils/common";
 
@@ -480,6 +487,24 @@ export default {
       // 滚动条滚动至输入框位置，并且进行focus
       scrollToElem(".layui-input-block", 500, -65); // -65是顶部导航栏的位置
       document.getElementById("edit").focus();
+    },
+    setCollect() {
+      // 设置收藏 & 取消收藏
+      const { isLogin } = this.$store.state;
+      if (!isLogin) {
+        this.$pop("shake", "请先登录");
+      }
+
+      const collect = {
+        tid: this.tid,
+        title: this.page.title,
+        isFav: this.page.isFav ? 1 : 0
+      };
+
+      addCollect(collect).then(() => {
+        this.page.isFav = !this.page.isFav;
+        this.$pop("", this.page.isFav ? "设置收藏成功" : "取消收藏成功");
+      });
     }
   }
 };
