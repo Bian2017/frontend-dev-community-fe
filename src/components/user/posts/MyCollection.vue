@@ -78,8 +78,4 @@ export default {
 .title {
   width: 70%;
 }
-
-.link {
-  color: #01aaed;
-}
 </style>

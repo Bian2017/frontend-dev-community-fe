@@ -114,13 +114,16 @@
                   <img :src="item.cuid? item.cuid.pic: '/img/avatar.jpg'" alt=" " />
                 </a>
                 <div class="fly-detail-user">
-                  <a href class="fly-link">
+                  <router-link
+                    class="fly-link"
+                    :to="{name: 'home', params: {uid: item.cuid && item.cuid._id}}"
+                  >
                     <cite>{{item.cuid ? item.cuid.name: '匿名'}}</cite>
                     <i
                       v-if="item.cuid && item.cuid.isVip !== '0' ? item.cuid.isVip: false"
                       class="layui-badge fly-badge-vip"
                     >VIP{{item.cuid.isVip}}</i>
-                  </a>
+                  </router-link>
 
                   <span v-if="index === 0">(楼主)</span>
                   <!--

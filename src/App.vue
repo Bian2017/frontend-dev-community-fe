@@ -28,6 +28,10 @@ export default {
   color: #999;
 }
 
+.link {
+  color: #01aaed;
+}
+
 .orange {
   color: #ff5722;
 }

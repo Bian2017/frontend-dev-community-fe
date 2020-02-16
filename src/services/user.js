@@ -26,3 +26,9 @@ export const deletePostByUid = data => request.get(`/user/delete-post?${qs.strin
 
 // 获取用户的基本信息
 export const getInfo = data => request.get(`/public/info?${qs.stringify(data)}`);
+
+// 获取用户最近文章列表
+export const getPostPublic = data => request.get(`/public/latest-post?${qs.stringify(data)}`);
+
+// 获取用户最近评论列表
+export const getCommentList = data => request.get(`/public/latest-comment?${qs.stringify(data)}`);
