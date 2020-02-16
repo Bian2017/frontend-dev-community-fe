@@ -165,7 +165,10 @@
             <!-- 无数据时 -->
             <li class="fly-none" v-if="comments.length === 0">消灭零回复</li>
           </ul>
+
+          <!-- 针对新帖，无评论数，此时新增评帖是缓存数据，total依旧为0，页码此时会显示不正确。故可加上total > 0判断 -->
           <pagination
+            v-show="comments.length > 0 && total > 0"
             :showType="'icon'"
             :hasSelect="true"
             :total="total"
@@ -260,6 +263,7 @@ export default {
       }
     };
   },
+
   computed: {
     content() {
       if (typeof this.page.content === "undefined") {
@@ -274,6 +278,13 @@ export default {
     },
     user() {
       return this.$store.state.userInfo;
+    }
+  },
+  watch: {
+    tid() {
+      // 当tid发生变化，需重新获取数据
+      this.getPostDetail();
+      this.getCommentsList();
     }
   },
   mounted() {

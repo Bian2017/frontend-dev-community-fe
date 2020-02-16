@@ -244,13 +244,17 @@ export default {
         code: this.code,
         sid: this.$store.state.sid
       })
-        .then(() => {
+        .then(res => {
           localStorage.setItem("addData", ""); // 清空已经发布的内容
-          this.$alert("发帖成功~~2s后跳转");
+          this.$pop("", "发帖成功");
 
           setTimeout(() => {
-            this.$router.push({ name: "index" });
-          }, 2000);
+            this.$router.push({
+              name: "detail",
+              // eslint-disable-next-line no-underscore-dangle
+              params: { tid: res.data._id }
+            });
+          }, 1000);
         })
         .catch(err => {
           if (err.data.code === 500) {

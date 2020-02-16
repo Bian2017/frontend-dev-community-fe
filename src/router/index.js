@@ -113,6 +113,26 @@ const routes = [
     props: true,
     meta: {
       requiresAuth: true
+    },
+    beforeEnter(to, from, next) {
+      // 正常情况
+      if (from.name === "detail" && to.params.page && to.params.page.isEnd === "0") {
+        next();
+      } else {
+        // 帖子此时处于结贴状态，需防止用户通过手动改变url进入编辑帖子页面
+        const editData = localStorage.getItem("editData");
+
+        if (editData && editData !== "") {
+          const editObj = JSON.parse(editData);
+          if (editObj.isEnd === "0") {
+            next();
+          } else {
+            next("/");
+          }
+        } else {
+          next("/");
+        }
+      }
     }
   },
   {

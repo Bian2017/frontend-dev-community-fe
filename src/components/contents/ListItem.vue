@@ -7,7 +7,12 @@
         </a>
         <h2>
           <a class="layui-badge">{{ item.catalog }}</a>
-          <a href="jie/detail.html">{{ item.title }}</a>
+          <router-link
+            :to="{
+                name: 'detail',
+                params: { tid: item._id }
+            }"
+          >{{ item.title }}</router-link>
         </h2>
         <div class="fly-list-info">
           <a href="user/home.html" link>

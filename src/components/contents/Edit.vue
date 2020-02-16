@@ -41,7 +41,7 @@
                       </div>
                     </div>
                   </div>
-                  <editor @changeContent="add" :initContent="content"></editor>
+                  <editor @changeContent="editPost" :initContent="content"></editor>
                   <div class="layui-form-item">
                     <div class="layui-inline">
                       <label class="layui-form-label">悬赏飞吻</label>
@@ -183,7 +183,7 @@ export default {
     changeFav() {
       this.isSelectFav = !this.isSelectFav;
     },
-    add(val) {
+    editPost(val) {
       this.content = val;
 
       const saveData = {
@@ -194,7 +194,13 @@ export default {
       };
 
       if (this.title.trim() !== "" && this.content.trim() !== "") {
-        localStorage.setItem("editData", JSON.stringify(saveData));
+        const editData = localStorage.getItem("editData"); // 主要读取缓存里的配置，即isEnd属性，防止被saveData直接覆盖
+        let newObj = { ...saveData };
+
+        if (editData && editData !== "") {
+          newObj = { ...newObj, ...JSON.parse(editData) };
+        }
+        localStorage.setItem("editData", JSON.stringify(newObj));
       }
     },
     async submit() {
@@ -219,11 +225,11 @@ export default {
       })
         .then(() => {
           localStorage.setItem("editData", ""); // 清空已经发布的内容
-          this.$alert("发帖成功~~2s后跳转");
+          this.$pop("", "更新成功");
 
           setTimeout(() => {
-            this.$router.push({ name: "index" });
-          }, 2000);
+            this.$router.push({ name: "detail", params: { tid: this.tid } });
+          }, 1000);
         })
         .catch(err => {
           if (err.data.code === 500) {
