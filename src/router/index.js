@@ -116,7 +116,11 @@ const routes = [
     },
     beforeEnter(to, from, next) {
       // 正常情况
-      if (from.name === "detail" && to.params.page && to.params.page.isEnd === "0") {
+      if (
+        ["detail", "mypost"].indexOf(from.name) !== -1 &&
+        to.params.page &&
+        to.params.page.isEnd === "0"
+      ) {
         next();
       } else {
         // 帖子此时处于结贴状态，需防止用户通过手动改变url进入编辑帖子页面
