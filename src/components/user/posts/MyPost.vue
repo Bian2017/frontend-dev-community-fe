@@ -63,7 +63,7 @@
       </table>
     </div>
     <pagination
-      v-show="total > 1"
+      v-show="total > 0"
       :total="total"
       :current="current"
       :align="'left'"
@@ -86,9 +86,8 @@ export default {
   data() {
     return {
       list: [],
-      page: 0,
-      limit: 10,
       total: 0,
+      limit: 10,
       current: 0
     };
   },
@@ -98,7 +97,7 @@ export default {
   methods: {
     getPostList() {
       getPostListByUid({
-        page: this.page,
+        page: this.current,
         limit: this.limit
       }).then(res => {
         this.list = res.data;
@@ -131,6 +130,7 @@ export default {
     },
     handleChange(val) {
       this.current = val;
+      this.getPostList();
     },
     editPost(item) {
       if (item.isEnd === "1") {

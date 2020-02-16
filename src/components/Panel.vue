@@ -26,10 +26,10 @@
           <!-- 用户登入后显示 -->
           <template v-if="isLogin">
             <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block">
-              <a>我发表的贴</a>
+              <router-link :to="{name: 'mypost'}">我发表的贴</router-link>
             </li>
             <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block">
-              <a href="user/index.html#collection">我收藏的贴</a>
+              <router-link :to="{name: 'mycollection'}">我收藏的贴</router-link>
             </li>
           </template>
         </ul>
