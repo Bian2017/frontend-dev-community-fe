@@ -23,3 +23,6 @@ export const getPostListByUid = data => request.get(`/user/post?${qs.stringify(d
 
 // 删除指定的文章
 export const deletePostByUid = data => request.get(`/user/delete-post?${qs.stringify(data)}`);
+
+// 获取用户的基本信息
+export const getInfo = data => request.get(`/public/info?${qs.stringify(data)}`);
