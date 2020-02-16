@@ -33,4 +33,7 @@ const addPost = data => request.post("/content/add", { ...data });
 // 获取文章详情
 const getDetail = tid => request.get(`/public/content/detail?tid=${tid}`);
 
-export { getList, getTop, getTips, getLinks, uploadImg, addPost, getDetail };
+// 更新帖子
+const updatePost = data => request.post(`/content/update`, data);
+
+export { getList, getTop, getTips, getLinks, uploadImg, addPost, getDetail, updatePost };

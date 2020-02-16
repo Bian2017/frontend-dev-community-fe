@@ -81,7 +81,17 @@
             </div>
           </div>
           <div class="layui-btn-container fly-detail-admin">
-            <a href class="layui-btn layui-btn-sm jie-admin">编辑</a>
+            <router-link
+              class="layui-btn layui-btn-sm jie-admin"
+              v-show="page.isEnd ==='0'"
+              :to="{
+                name: 'edit',
+                params: {
+                  tid: tid,
+                  page: page
+                }
+              }"
+            >编辑</router-link>
             <a href class="layui-btn layui-btn-sm jie-admin jie-admin-collect">收藏</a>
           </div>
           <div class="detail-body photos" v-html="content"></div>
