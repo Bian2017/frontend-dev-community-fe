@@ -56,7 +56,7 @@
         <template v-else>
           <!-- 扩大hover区域 -->
           <li class="layui-nav-item" @mouseover="show()" @mouseleave="hide()">
-            <a class="fly-nav-avatar" href="javascript:;">
+            <router-link class="fly-nav-avatar" :to="{name: 'center'}">
               <cite class="layui-hide-xs">{{userInfo.name}}</cite>
               <!-- <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i> -->
               <i
@@ -64,19 +64,32 @@
                 v-show="userInfo.isVip !== '0'"
               >VIP{{userInfo.isVip}}</i>
               <img :src="'http://localhost:3001' + userInfo.pic" />
-            </a>
+            </router-link>
 
             <!-- 下拉菜单 -->
             <dl
               class="layui-nav-child layui-anim layui-anim-upbit"
               :class="{'layui-show': isHover}"
             >
-              <dd v-for="(item, index) in lists" :key="'my'+index">
-                <router-link :to="{name: item.link}">
-                  <i class="layui-icon" :class="item.icon"></i>
-                  {{item.name}}
+              <dd>
+                <router-link :to="{name: 'info'}">
+                  <i class="layui-icon layui-icon-set"></i>
+                  基本设置
                 </router-link>
               </dd>
+              <dd>
+                <router-link :to="{name: 'msg'}">
+                  <i class="layui-icon layui-icon-notice"></i>
+                  我的消息
+                </router-link>
+              </dd>
+              <dd>
+                <router-link :to="{name: 'home', params: {uid: userInfo._id}}">
+                  <i class="layui-icon layui-icon-home"></i>
+                  我的主页
+                </router-link>
+              </dd>
+
               <hr style="margin: 5px 0;" />
               <dd>
                 <a href="javascript: void(0)" style="text-align: center;" @click="logout()">退出</a>
@@ -95,24 +108,7 @@ export default {
   data() {
     return {
       isHover: false,
-      hoverCtrl: {},
-      lists: [
-        {
-          name: "基本设置",
-          icon: "layui-icon-set",
-          link: "info"
-        },
-        {
-          name: "我的消息",
-          icon: "layui-icon-notice",
-          link: "msg"
-        },
-        {
-          name: "我的主页",
-          icon: "layui-icon-home",
-          link: "center"
-        }
-      ]
+      hoverCtrl: {}
     };
   },
   computed: {

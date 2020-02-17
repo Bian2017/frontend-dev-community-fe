@@ -59,7 +59,19 @@ export default {
       isSign: false // 是否签到
     };
   },
+  watch: {
+    userInfo(newval) {
+      if (newval.isSign === true) {
+        this.isSign = true;
+      } else {
+        this.isSign = false;
+      }
+    }
+  },
   computed: {
+    userInfo() {
+      return this.$store.state.userInfo; // userInfo存在异步情况
+    },
     isLogin() {
       return this.$store.state.isLogin;
     },

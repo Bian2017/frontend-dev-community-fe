@@ -43,6 +43,8 @@ const NotFound = () => import(/* webpackChunkName: 'not-found' */ "../views/NotF
 const Confirm = () => import(/* webpackChunkName: 'confirm' */ "../views/Confirm.vue");
 const Reset = () => import(/* webpackChunkName: 'reset' */ "../views/Reset.vue");
 const Add = () => import(/* webpackChunkName: 'add' */ "../components/contents/Add.vue");
+const Edit = () => import(/* webpackChunkName: 'edit' */ "../components/contents/Edit.vue");
+const Detail = () => import(/* webpackChunkName: 'detail' */ "../components/contents/Detail.vue");
 
 Vue.use(VueRouter);
 
@@ -99,7 +101,49 @@ const routes = [
   {
     path: "/add",
     name: "add",
-    component: Add
+    component: Add,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/edit/:tid",
+    name: "edit",
+    component: Edit,
+    props: true,
+    meta: {
+      requiresAuth: true
+    },
+    beforeEnter(to, from, next) {
+      // 正常情况
+      if (
+        ["detail", "mypost"].indexOf(from.name) !== -1 &&
+        to.params.page &&
+        to.params.page.isEnd === "0"
+      ) {
+        next();
+      } else {
+        // 帖子此时处于结贴状态，需防止用户通过手动改变url进入编辑帖子页面
+        const editData = localStorage.getItem("editData");
+
+        if (editData && editData !== "") {
+          const editObj = JSON.parse(editData);
+          if (editObj.isEnd === "0") {
+            next();
+          } else {
+            next("/");
+          }
+        } else {
+          next("/");
+        }
+      }
+    }
+  },
+  {
+    path: "/detail/:tid",
+    name: "detail",
+    props: true, // props被设置为true，route.params将会被设置为组件属性
+    component: Detail
   },
   {
     path: "/user/:uid",
@@ -180,6 +224,7 @@ const routes = [
   },
   {
     path: "/404",
+    name: "404",
     component: NotFound
   },
   {

@@ -7,18 +7,23 @@
         </a>
         <h2>
           <a class="layui-badge">{{ item.catalog }}</a>
-          <a href="jie/detail.html">{{ item.title }}</a>
+          <router-link
+            :to="{
+                name: 'detail',
+                params: { tid: item._id }
+            }"
+          >{{ item.title }}</router-link>
         </h2>
         <div class="fly-list-info">
-          <a href="user/home.html" link>
+          <router-link :to="{name: 'home', params: {uid: item.uid._id}}">
             <cite>{{ item.uid.name }}</cite>
             <!--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>-->
             <i
               class="layui-badge fly-badge-vip"
               v-if="item.uid.isVip !== '0'"
             >{{ "VIP" + item.uid.isVip }}</i>
-          </a>
-          <span>{{ item.created | moment }}</span>
+          </router-link>
+          <span>{{ item.created | formatDate }}</span>
 
           <span class="fly-list-kiss layui-hide-xs" title="悬赏飞吻">
             <i class="iconfont icon-kiss"></i>
@@ -30,7 +35,7 @@
             {{ item.answer }}
           </span>
         </div>
-        <div class="fly-list-badge" v-show="item.tags.length > 0">
+        <div class="fly-list-badge" v-show="item.tags.length > 0 && item.tags[0].name !== ''">
           <span
             class="layui-badge"
             v-for="(tag, index) in item.tags"
@@ -51,8 +56,6 @@
 
 <script>
 import _ from "loadsh";
-import moment from "moment";
-import "moment/locale/zh-cn";
 
 export default {
   name: "listItem",
@@ -103,18 +106,6 @@ export default {
   methods: {
     more() {
       this.$emit("nextpage");
-    }
-  },
-  // 过滤器
-  filters: {
-    moment(date) {
-      // 超过7天，显示日期
-      if (moment(date).isBefore(moment().subtract(7, "days"))) {
-        return moment(date).format("YYYY-MM-DD");
-      }
-
-      // 否则显示1小时前，xx小时前，X天前
-      return moment(date).from(moment());
     }
   }
 };

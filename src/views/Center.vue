@@ -2,6 +2,12 @@
   <div class="layui-container fly-marginTop fly-user-main">
     <ul class="layui-nav layui-nav-tree" lay-filter="test">
       <!-- 侧边导航: <ul class="layui-nav layui-nav-tree layui-nav-side"> -->
+      <li class="layui-nav-item">
+        <router-link :to="{name: 'home', params: {uid: userInfo._id}}">
+          <i class="iconfe icon-home"></i>
+          我的主页
+        </router-link>
+      </li>
       <li class="layui-nav-item" v-for="(item, index) in lists" :key="'center'+ index">
         <router-link :to="{name: item.link}" :active-class="item.activeClass">
           <i class="iconfe" :class="item.icon"></i>
@@ -16,14 +22,14 @@
 <script>
 export default {
   name: "center",
+  computed: {
+    userInfo() {
+      return this.$store.state.userInfo;
+    }
+  },
   data() {
     return {
       lists: [
-        {
-          name: "我的主页",
-          icon: "icon-home",
-          link: "home"
-        },
         {
           name: "用户中心",
           icon: "icon-user",
