@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>websocket</title>
+    <script src="https://cdn.staticfile.org/vue/2.6.11/vue.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div v-if="isShow">
+        <p>昵称：<input type="text" v-model="name"></p>
+        <p>房间号：<input type="text" v-model="roomid"></p>
+        <button type="button" @click="enter()">进入聊天室</button>
+      </div>
+      <div v-else>
+          <ul>
+            <li v-for="(item, index) in lists" :key="'message' + index">{{item}}</li>
+            <li>在线人数{{num}}</li>
+          </ul>
+          <div class="ctrl">
+            <input type="text" id="msg" v-model="message"></input>
+            <button type="button" id="send" @click="send()">发送</button>
+          </div>
+      </div>
+    </div>
+    <script>
+      var app = new Vue({
+        el: '#app',
+        data: {
+          message: '',
+          lists: [],
+          ws: {},
+          name: '',
+          isShow: true,
+          num: 0,
+          roomid:"" //房间号
+        },
+        mounted() {
+          this.ws  = new WebSocket('ws://127.0.0.1:3000');
+          this.ws.onopen = this.onOpen
+          this.ws.onmessage = this.onMessage
+          this.ws.onclose = this.onClose
+          this.ws.onerror = this.onError
+        },
+        methods: {
+          // 进入聊天室
+          enter() {
+            if(this.name.trim() === '') {
+              alert('用户名不得为空')
+              return
+            }
+
+            this.isShow = false
+            this.ws.send(JSON.stringify({
+              event: "enter",
+              message: this.name,
+              roomid: this.roomid
+            }))
+          },
+          onOpen: function() {
+            console.log('open:' + this.ws.readyState);
+            // 发起鉴权请求
+            this.ws.send(JSON.stringify({
+              event: 'auth',
+              message: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Imltb29jIiwiaWF0IjoxNTE2MjM5MDIyfQ.KQv-KO2KRPtFP1Hl9h3qyxiko8Czz_7vWVm-5JcyP7k' 
+            }))
+          
+          },
+          onMessage: function(event) {
+            // 当用户未进入聊天室，则不接收消息
+            if(this.isShow) {
+              return
+            }
+
+            // 接收服务端发送过来的消息
+            var tmp = JSON.parse(event.data)
+
+            if(tmp.event === 'noauth') {
+              console.log('鉴权失败')
+              return 
+            }
+            
+            if(tmp.event === 'enter') {
+              // 当有新用户进入聊天室
+              this.lists.push('欢迎：' + tmp.message + '加入聊天室')
+            } else if(tmp.event === 'out') {
+              this.lists.push(tmp.name + '已经退出了聊天室!')
+            } else {
+              if(tmp.name !== this.name) { // 屏蔽发送给自己的消息
+                // 接收正常的聊天
+                this.lists.push(tmp.name + ':' + tmp.message)
+              }
+            }
+            this.num = tmp.num
+          },
+          onClose: function() {
+            // 当链接主动断开的时候触发close事件
+            console.log('close:' + this.ws.readyState);
+          },
+          onError: function () {
+            // 当连接失败的时候触发error事件
+            console.log('error:' + this.ws.readyState);
+          },
+         
+          // 发送消息
+          send: function() {
+            this.lists.push(this.name + ':' + this.message)
+            this.ws.send(JSON.stringify({
+              event: "message",
+              message: this.message
+            }))
+            this.message = ''
+          }
+        }
+      })
+    </script>
+  </body>
+</html>
