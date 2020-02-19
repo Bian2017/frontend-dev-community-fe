@@ -35,16 +35,19 @@
           name: '',
           isShow: true,
           num: 0,
-          roomid:"" //房间号
+          roomid:"", //房间号
+          handle: {}
         },
         mounted() {
-          this.ws  = new WebSocket('ws://127.0.0.1:3000');
-          this.ws.onopen = this.onOpen
-          this.ws.onmessage = this.onMessage
-          this.ws.onclose = this.onClose
-          this.ws.onerror = this.onError
         },
         methods: {
+          init() {
+            this.ws = new WebSocket('ws://127.0.0.1:3000');
+            this.ws.onopen = this.onOpen
+            this.ws.onmessage = this.onMessage
+            this.ws.onclose = this.onClose
+            this.ws.onerror = this.onError
+          },
           // 进入聊天室
           enter() {
             if(this.name.trim() === '') {
@@ -52,12 +55,8 @@
               return
             }
 
+            this.init()
             this.isShow = false
-            this.ws.send(JSON.stringify({
-              event: "enter",
-              message: this.name,
-              roomid: this.roomid
-            }))
           },
           onOpen: function() {
             console.log('open:' + this.ws.readyState);
@@ -66,7 +65,12 @@
               event: 'auth',
               message: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Imltb29jIiwiaWF0IjoxNTE2MjM5MDIyfQ.KQv-KO2KRPtFP1Hl9h3qyxiko8Czz_7vWVm-5JcyP7k' 
             }))
-          
+
+            this.ws.send(JSON.stringify({
+              event: "enter",
+              message: this.name,
+              roomid: this.roomid
+            }))
           },
           onMessage: function(event) {
             // 当用户未进入聊天室，则不接收消息
@@ -76,32 +80,47 @@
 
             // 接收服务端发送过来的消息
             var tmp = JSON.parse(event.data)
-
-            if(tmp.event === 'noauth') {
-              console.log('鉴权失败')
-              return 
+            switch(tmp.event) {
+              case 'noauth':
+                console.log('鉴权失败')
+                break
+              case 'enter':
+                  // 当有新用户进入聊天室
+                this.lists.push('欢迎：' + tmp.message + '加入聊天室')
+                break
+              case 'out':
+                this.lists.push(tmp.name + '已经退出了聊天室!')
+                break
+              case 'heartbeat':
+                this.checkServer()
+                this.ws.send(JSON.stringify({
+                  event: 'heartbeat',
+                  message: 'pong'
+                }))
+                break
+              default:
+                if (tmp.name !== this.name) { // 屏蔽发送给自己的消息
+                  // 接收正常的聊天
+                  this.lists.push(tmp.name + ':' + tmp.message)
+                }
+                break
             }
-            
-            if(tmp.event === 'enter') {
-              // 当有新用户进入聊天室
-              this.lists.push('欢迎：' + tmp.message + '加入聊天室')
-            } else if(tmp.event === 'out') {
-              this.lists.push(tmp.name + '已经退出了聊天室!')
-            } else {
-              if(tmp.name !== this.name) { // 屏蔽发送给自己的消息
-                // 接收正常的聊天
-                this.lists.push(tmp.name + ':' + tmp.message)
-              }
-            }
+      
             this.num = tmp.num
           },
           onClose: function() {
             // 当链接主动断开的时候触发close事件
             console.log('close:' + this.ws.readyState);
+            this.ws.close()
           },
           onError: function () {
             // 当连接失败的时候触发error事件
             console.log('error:' + this.ws.readyState);
+            var _this = this
+            // 连接失败后，1s进行断线重连
+            setTimeout(function() {
+              _this.init()
+            }, 1000)
           },
          
           // 发送消息
@@ -112,6 +131,15 @@
               message: this.message
             }))
             this.message = ''
+          },
+          checkServer() {
+            var _this = this
+            clearTimeout(this.handle)
+            // 未收到ping-pong包，就会关闭websocket，并进行断线重连
+            this.handle = setTimeout(function() {
+              _this.onClose()
+              _this.init()
+            }, 1000 + 500) // 1000毫秒是间隔时间，500毫秒是网络迟延
           }
         }
       })

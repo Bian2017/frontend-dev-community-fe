@@ -6,11 +6,11 @@ const wss = new WebSocket.Server({ noServer: true });
 const server = http.createServer();
 
 const group = {}; // 记录每个房间号的人数
+const timeInterval = 1000; // 1s
 
-// 多聊天室功能
-// roomid -> 对应相同的roomid进行广播消息
+// ws代表当前收到消息的客户端
 wss.on("connection", function connection(ws) {
-  // ws代表当前收到消息的客户端
+  ws.isAlive = true; // 初始的心跳连接状态
 
   // 接收客户端消息
   ws.on("message", function(msg) {
@@ -33,23 +33,34 @@ wss.on("connection", function connection(ws) {
       jwt.verify(msgObj.message, "secret", function(err, decode) {
         if (err) {
           console.log("鉴权失败");
+          ws.send(JSON.stringify({ event: "noauth", message: "请先进行鉴权" }));
         } else {
           // 鉴权通过
           console.log("解密：", decode);
           ws.isAuth = true;
         }
       });
+      return;
     }
 
     // 拦截非鉴权请求
     if (!ws.isAuth) {
-      ws.send(JSON.stringify({ event: "noauth", message: "请先进行鉴权" }));
+      return;
+    }
+
+    // 心跳检测
+    if (msgObj.event === "heartbeat" && msgObj.message === "pong") {
+      ws.isAlive = true;
       return;
     }
 
     // 广播消息(即获取所有的客户端)
     wss.clients.forEach(client => {
-      // 补充：如何判断非自己的客户端：ws !== client
+      /**
+       *  多聊天室功能
+       *  roomid -> 对应相同的roomid进行广播消息
+       *  补充：如何判断非自己的客户端：ws !== client
+       */
       if (client.readyState === WebSocket.OPEN && client.roomid === ws.roomid) {
         msgObj.name = ws.name;
         // msgObj.num = wss.clients.size; // 聊天室的人数
@@ -84,3 +95,24 @@ server.on("upgrade", function upgrade(request, socket, head) {
 });
 
 server.listen(3000);
+
+setInterval(() => {
+  wss.clients.forEach(ws => {
+    if (!ws.isAlive) {
+      group[ws.roomid] -= 1; // 在线人数减1
+      return ws.terminate(); // 关闭websocket
+    }
+
+    ws.isAlive = false;
+
+    // 主动发送心跳检测请求
+    // 当客户端返回了消息之后，主动设置flag为在线
+    ws.send(
+      JSON.stringify({
+        event: "heartbeat",
+        message: "ping",
+        num: group[ws.roomid]
+      })
+    );
+  });
+}, timeInterval);
