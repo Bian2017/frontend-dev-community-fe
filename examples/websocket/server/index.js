@@ -98,8 +98,9 @@ server.listen(3000);
 
 setInterval(() => {
   wss.clients.forEach(ws => {
-    if (!ws.isAlive) {
+    if (!ws.isAlive && ws.roomid) {
       group[ws.roomid] -= 1; // 在线人数减1
+      delete ws.roomid;
       return ws.terminate(); // 关闭websocket
     }
 
