@@ -1,12 +1,13 @@
 const WebSocket = require("ws");
-const http = require("http");
-const jwt = require("jsonwebtoken");
+// const jwt = require("jsonwebtoken");
+// const http = require("http");
 
-const wss = new WebSocket.Server({ noServer: true });
-const server = http.createServer();
+// const wss = new WebSocket.Server({ noServer: true });
+// const server = http.createServer();
+const wss = new WebSocket.Server({ port: 3000 });
 
 const group = {}; // 记录每个房间号的人数
-const timeInterval = 1000; // 1s
+const timeInterval = 30000; // 30s
 
 // ws代表当前收到消息的客户端
 wss.on("connection", function connection(ws) {
@@ -28,25 +29,25 @@ wss.on("connection", function connection(ws) {
     }
 
     // 鉴权
-    if (msgObj.event === "auth") {
-      // 密钥设置成secret
-      jwt.verify(msgObj.message, "secret", function(err, decode) {
-        if (err) {
-          console.log("鉴权失败");
-          ws.send(JSON.stringify({ event: "noauth", message: "请先进行鉴权" }));
-        } else {
-          // 鉴权通过
-          console.log("解密：", decode);
-          ws.isAuth = true;
-        }
-      });
-      return;
-    }
+    // if (msgObj.event === "auth") {
+    //   // 密钥设置成secret
+    //   jwt.verify(msgObj.message, "secret", function(err, decode) {
+    //     if (err) {
+    //       console.log("鉴权失败");
+    //       ws.send(JSON.stringify({ event: "noauth", message: "请先进行鉴权" }));
+    //     } else {
+    //       // 鉴权通过
+    //       console.log("解密：", decode);
+    //       ws.isAuth = true;
+    //     }
+    //   });
+    //   return;
+    // }
 
     // 拦截非鉴权请求
-    if (!ws.isAuth) {
-      return;
-    }
+    // if (!ws.isAuth) {
+    //   return;
+    // }
 
     // 心跳检测
     if (msgObj.event === "heartbeat" && msgObj.message === "pong") {
@@ -88,13 +89,13 @@ wss.on("connection", function connection(ws) {
   });
 });
 
-server.on("upgrade", function upgrade(request, socket, head) {
-  wss.handleUpgrade(request, socket, head, function done(ws) {
-    wss.emit("connection", ws, request);
-  });
-});
+// server.on("upgrade", function upgrade(request, socket, head) {
+//   wss.handleUpgrade(request, socket, head, function done(ws) {
+//     wss.emit("connection", ws, request);
+//   });
+// });
 
-server.listen(3000);
+// server.listen(3000);
 
 setInterval(() => {
   wss.clients.forEach(ws => {
