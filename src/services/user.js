@@ -32,3 +32,6 @@ export const getPostPublic = data => request.get(`/public/latest-post?${qs.strin
 
 // 获取用户最近评论列表
 export const getCommentList = data => request.get(`/public/latest-comment?${qs.stringify(data)}`);
+
+// 获取用户未读消息
+export const getMsg = data => request.get(`/user/getmsg?${qs.stringify(data)}`);

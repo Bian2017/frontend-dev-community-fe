@@ -32,14 +32,56 @@
             </p>
           </li>
         </ul>
+        <pagination
+          v-show="total > 0"
+          :total="total"
+          :current="page"
+          :align="'left'"
+          :hasTotal="true"
+          :hasSelect="true"
+          @changeCurrent="handleChange"
+        ></pagination>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { getMsg } from "@/services/user";
+import Pagination from "@/components/modules/page/Index.vue";
+
 export default {
-  name: "user-msg"
+  name: "user-msg",
+  data() {
+    return {
+      lists: [],
+      page: 0,
+      limit: 10,
+      total: 0
+    };
+  },
+  components: {
+    Pagination
+  },
+  mounted() {
+    this.getMsgList();
+  },
+  methods: {
+    getMsgList() {
+      getMsg({
+        page: this.page,
+        limit: this.limit
+      }).then(res => {
+        if (res.code === 200) {
+          this.lists = res.data;
+        }
+      });
+    },
+    handleChange(val) {
+      this.page = val;
+      this.getMsgList();
+    }
+  }
 };
 </script>
 

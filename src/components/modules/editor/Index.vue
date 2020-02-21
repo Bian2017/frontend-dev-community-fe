@@ -219,41 +219,6 @@ export default {
 </script>
 
 <style lang="less">
-@keyframes bounceIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes bounceOut {
-  0% {
-    transform: scale(1);
-  }
-  30% {
-    transform: scale(1.05);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.7);
-  }
-}
-
-// transition组件需结合过渡的类名
-.fade-leave-active {
-  animation: bounceOut 0.3s;
-}
-
-.fade-enter-active,
-.fade-enter-to {
-  animation: bounceIn 0.3s;
-}
-
 .fly-editor {
   height: 260px;
 }
