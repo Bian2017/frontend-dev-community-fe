@@ -22,9 +22,17 @@ export default {
     };
   },
   mounted() {
-    getTips().then(res => {
-      this.lists = res.data;
-    });
+    getTips()
+      .then(res => {
+        this.lists = res.data;
+      })
+      .catch(err => {
+        if (err && err.data) {
+          this.$alert(err.data.msg);
+        } else {
+          this.$alert(err);
+        }
+      });
   }
 };
 </script>

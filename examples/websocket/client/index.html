@@ -11,6 +11,7 @@
     <div id="app">
       <div v-if="isShow">
         <p>昵称：<input type="text" v-model="name"></p>
+        <p>uid：<input type="text" v-model="uid"></p>
         <p>房间号：<input type="text" v-model="roomid"></p>
         <button type="button" @click="enter()">进入聊天室</button>
       </div>
@@ -36,6 +37,7 @@
           isShow: true,
           num: 0,
           roomid:"", //房间号
+          uid: '',
           handle: {}
         },
         mounted() {
@@ -61,15 +63,16 @@
           onOpen: function() {
             console.log('open:' + this.ws.readyState);
             // 发起鉴权请求
-            this.ws.send(JSON.stringify({
-              event: 'auth',
-              message: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Imltb29jIiwiaWF0IjoxNTE2MjM5MDIyfQ.KQv-KO2KRPtFP1Hl9h3qyxiko8Czz_7vWVm-5JcyP7k' 
-            }))
+            // this.ws.send(JSON.stringify({
+            //   event: 'auth',
+            //   message: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Imltb29jIiwiaWF0IjoxNTE2MjM5MDIyfQ.KQv-KO2KRPtFP1Hl9h3qyxiko8Czz_7vWVm-5JcyP7k' 
+            // }))
 
             this.ws.send(JSON.stringify({
               event: "enter",
               message: this.name,
-              roomid: this.roomid
+              roomid: this.roomid,
+              uid: this.uid
             }))
           },
           onMessage: function(event) {
@@ -141,7 +144,7 @@
               setTimeout(function() {
                 _this.init()
               }, 1000)  // 等websocket完全关闭了再发起重连
-            }, 30000 + 500) // 30000毫秒是间隔时间，500毫秒是网络迟延
+            }, 30000 + 1000) // 30000毫秒是间隔时间，1000毫秒是网络迟延
           }
         }
       })

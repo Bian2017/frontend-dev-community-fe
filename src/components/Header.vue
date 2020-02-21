@@ -63,7 +63,7 @@
                 class="layui-badge fly-badge-vip layui-hide-xs"
                 v-show="userInfo.isVip !== '0'"
               >VIP{{userInfo.isVip}}</i>
-              <img :src="'http://localhost:3001' + userInfo.pic" />
+              <img :src="userInfo.pic" />
             </router-link>
 
             <!-- 下拉菜单 -->
@@ -96,6 +96,15 @@
               </dd>
             </dl>
           </li>
+          <div class="fly-nav-msg">1</div>
+          <transition name="fade">
+            <div class="layui-layer-tips" v-show="hasMsg">
+              <div class="layui-layer-content">
+                您有一条未读消息
+                <i class="layui-layer-TipsG layui-layer-TipsB"></i>
+              </div>
+            </div>
+          </transition>
         </template>
       </ul>
     </div>
@@ -108,8 +117,12 @@ export default {
   data() {
     return {
       isHover: false,
-      hoverCtrl: {}
+      hoverCtrl: {},
+      hasMsg: false
     };
+  },
+  mounted() {
+    window.vue = this;
   },
   computed: {
     isShow() {
@@ -150,6 +163,7 @@ export default {
       );
     },
     hide() {
+      console.log("mouseleave");
       /**
        * 当用户的鼠标移出头像的时候，隐藏操作菜单。
        *
@@ -157,7 +171,7 @@ export default {
        */
       clearInterval(this.hoverCtrl);
       this.hoverCtrl = setTimeout(() => {
-        this.isHover = true;
+        this.isHover = false;
       }, 500);
     }
   }
@@ -165,4 +179,11 @@ export default {
 </script>
 
 <style>
+.layui-layer-tips {
+  position: fixed;
+  white-space: nowrap;
+  right: 0;
+  top: 60px;
+  z-index: 2000;
+}
 </style>

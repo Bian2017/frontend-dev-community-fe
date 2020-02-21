@@ -1,42 +1,22 @@
-# login
+# 前端开发者社区
 
-## Project setup
+## 一、项目启动
+
+1. 安装依赖
 
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+2. 启动项目
 
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+要启动该项目，还需运行 Node 后台项目。Node 后台项目的的代码参考地址见[链接](https://github.com/Bian2017/frontend-dev-community-be)。
 
-```
-npm run build
-```
-
-### Lints and fixes files
-
-```
-npm run lint
-```
-
-### Customize configuration
-
-See [Configuration Reference](https://cli.vuejs.org/config/).
-
-## package.json
-
-### corejs
-
-core-js V3 目前与我们的项目不兼容，需安装 core-js V2 版本
-
-> npm i core-js@2 -D
-
-## 三、使用技巧
+## 三、项目小结
 
 ### 3.1 从 iconfont 官网下载的 iconfont 字体，其 class 属性`iconfont`与 layui 字体的 class 属性`iconfont`冲突，该如何解决？
 
