@@ -106,8 +106,10 @@ export default {
         .catch(err => {
           this.isRepeat = false;
 
-          if (err) {
-            this.$alert(err.msg);
+          if (err && err.data) {
+            this.$alert(err.data.msg);
+          } else {
+            this.$alert(err);
           }
         });
     },

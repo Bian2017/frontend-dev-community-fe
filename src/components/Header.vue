@@ -63,7 +63,7 @@
                 class="layui-badge fly-badge-vip layui-hide-xs"
                 v-show="userInfo.isVip !== '0'"
               >VIP{{userInfo.isVip}}</i>
-              <img :src="'http://localhost:3000' + userInfo.pic" />
+              <img :src="userInfo.pic" />
             </router-link>
 
             <!-- 下拉菜单 -->
@@ -163,6 +163,7 @@ export default {
       );
     },
     hide() {
+      console.log("mouseleave");
       /**
        * 当用户的鼠标移出头像的时候，隐藏操作菜单。
        *
@@ -170,7 +171,7 @@ export default {
        */
       clearInterval(this.hoverCtrl);
       this.hoverCtrl = setTimeout(() => {
-        this.isHover = true;
+        this.isHover = false;
       }, 500);
     }
   }
